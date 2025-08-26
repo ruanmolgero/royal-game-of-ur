@@ -1,0 +1,84 @@
+/* Importando uma fonte do Google Fonts para um visual melhor */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+/* Dica: Pesquise por "Coolors.co" para gerar paletas de cores incríveis */
+:root {
+    --cor-primaria: #2c3e50;
+    --cor-secundaria: #3498db;
+    --cor-fundo: #ecf0f1;
+    --cor-texto: #333;
+    --cor-header-footer: #1f2b38;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    line-height: 1.6;
+}
+
+header, footer {
+    background-color: var(--cor-header-footer);
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+}
+
+header h1 {
+    margin: 0;
+}
+
+nav ul {
+    padding: 0;
+    list-style: none;
+}
+
+nav ul li {
+    display: inline-block;
+    margin: 0 15px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav a:hover {
+    color: var(--cor-secundaria);
+}
+
+/* Usando Flexbox para criar o layout de duas colunas */
+.container {
+    display: flex;
+    max-width: 1200px;
+    margin: 20px auto;
+    gap: 20px;
+}
+
+main {
+    flex: 3;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+aside {
+    flex: 1;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+section {
+    margin-bottom: 2rem;
+}
+
+footer address {
+    font-style: normal;
+}
+
+a {
+    color: var(--cor-secundaria);
+}

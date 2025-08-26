@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Árvore DOM - Royal Game of Ur</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Árvore DOM da Página Principal</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Voltar para a Página Principal</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main style="max-width: 800px; margin: 20px auto;">
+        <h2>Estrutura do Documento (DOM)</h2>
+        <p>Abaixo está uma representação textual da hierarquia de elementos da página <code>index.html</code>.</p>
+        
+        <pre style="background-color: #eee; padding: 15px; border-radius: 5px; white-space: pre-wrap;">
+<code>
+html
+└── head
+|   ├── meta (charset)
+|   ├── meta (viewport)
+|   ├── title
+|   ├── link (favicon)
+|   └── link (stylesheet)
+└── body
+    ├── header
+    |   ├── h1
+    |   └── nav
+    |       └── ul
+    |           ├── li -> a
+    |           ├── li -> a
+    |           ├── li -> a
+    |           └── li -> a
+    ├── div (class="container")
+    |   ├── main
+    |   |   ├── section (id="sobre")
+    |   |   |   ├── h2
+    |   |   |   └── p
+    |   |   |   └── p
+    |   |   ├── section (id="objetivos")
+    |   |   |   ├── h2
+    |   |   |   └── p
+    |   |   └── section (id="disciplina")
+    |   |       ├── h2
+    |   |       └── p
+    |   └── aside
+    |       ├── h3
+    |       └── ul
+    |           ├── li -> strong, text
+    |           ├── li -> strong, a
+    |           ├── li -> strong, text
+    |           └── li -> strong, a
+    └── footer
+        └── address
+            ├── p -> a
+            └── p
+</code>
+        </pre>
+    </main>
+
+</body>
+</html>
