@@ -1,61 +1,7 @@
-[Tue Aug 26 16:14:25 2025] PHP 8.3.6 Development Server (http://127.0.0.1:8080) started
-[Tue Aug 26 16:14:27 2025] 127.0.0.1:53278 Accepted
-[Tue Aug 26 16:14:27 2025] 127.0.0.1:53278 [200]: GET /index.html
-[Tue Aug 26 16:14:27 2025] 127.0.0.1:53278 Closing
-[Tue Aug 26 16:14:27 2025] 127.0.0.1:53288 Accepted
-[Tue Aug 26 16:14:27 2025] 127.0.0.1:53288 [200]: GET /css/style.css
-[Tue Aug 26 16:14:27 2025] 127.0.0.1:53288 Closing
-[Tue Aug 26 16:14:28 2025] 127.0.0.1:53290 Accepted
-[Tue Aug 26 16:14:28 2025] 127.0.0.1:53290 [200]: GET /index.html
-[Tue Aug 26 16:14:28 2025] 127.0.0.1:53290 Closing
-[Tue Aug 26 16:14:28 2025] 127.0.0.1:53296 Accepted
-[Tue Aug 26 16:14:28 2025] 127.0.0.1:53296 [200]: GET /css/style.css
-[Tue Aug 26 16:14:28 2025] 127.0.0.1:53296 Closing
-[Tue Aug 26 16:14:30 2025] 127.0.0.1:53312 Accepted
-[Tue Aug 26 16:14:30 2025] 127.0.0.1:53312 [200]: GET /DOM.html
-[Tue Aug 26 16:14:30 2025] 127.0.0.1:53312 Closing
-[Tue Aug 26 16:14:30 2025] 127.0.0.1:53328 Accepted
-[Tue Aug 26 16:14:30 2025] 127.0.0.1:53328 [200]: GET /css/style.css
-[Tue Aug 26 16:14:30 2025] 127.0.0.1:53328 Closing
-[Tue Aug 26 16:14:30 2025] 127.0.0.1:53336 Accepted
-[Tue Aug 26 16:14:30 2025] 127.0.0.1:53336 [200]: GET /DOM.html
-[Tue Aug 26 16:14:30 2025] 127.0.0.1:53336 Closing
-[Tue Aug 26 16:14:30 2025] 127.0.0.1:53350 Accepted
-[Tue Aug 26 16:14:30 2025] 127.0.0.1:53350 [200]: GET /css/style.css
-[Tue Aug 26 16:14:30 2025] 127.0.0.1:53350 Closing
-[Tue Aug 26 16:14:36 2025] 127.0.0.1:56080 Accepted
-[Tue Aug 26 16:14:36 2025] 127.0.0.1:56080 [200]: GET /DOM.html
-[Tue Aug 26 16:14:36 2025] 127.0.0.1:56080 Closing
-[Tue Aug 26 16:14:36 2025] 127.0.0.1:56082 Accepted
-[Tue Aug 26 16:14:36 2025] 127.0.0.1:56082 [200]: GET /css/style.css
-[Tue Aug 26 16:14:36 2025] 127.0.0.1:56082 Closing
-[Tue Aug 26 16:14:36 2025] 127.0.0.1:56096 Accepted
-[Tue Aug 26 16:14:36 2025] 127.0.0.1:56096 [200]: GET /DOM.html
-[Tue Aug 26 16:14:36 2025] 127.0.0.1:56096 Closing
-[Tue Aug 26 16:14:36 2025] 127.0.0.1:56100 Accepted
-[Tue Aug 26 16:14:36 2025] 127.0.0.1:56100 [200]: GET /css/style.css
-[Tue Aug 26 16:14:36 2025] 127.0.0.1:56100 Closing
-[Tue Aug 26 16:14:36 2025] 127.0.0.1:56114 Accepted
-[Tue Aug 26 16:14:36 2025] 127.0.0.1:56114 [200]: GET /DOM.html
-[Tue Aug 26 16:14:36 2025] 127.0.0.1:56114 Closing
-[Tue Aug 26 16:14:36 2025] 127.0.0.1:56128 Accepted
-[Tue Aug 26 16:14:36 2025] 127.0.0.1:56128 [200]: GET /css/style.css
-[Tue Aug 26 16:14:36 2025] 127.0.0.1:56128 Closing
-[Tue Aug 26 16:14:37 2025] 127.0.0.1:56140 Accepted
-[Tue Aug 26 16:14:37 2025] 127.0.0.1:56140 [200]: GET /index.html
-[Tue Aug 26 16:14:37 2025] 127.0.0.1:56140 Closing
-[Tue Aug 26 16:14:37 2025] 127.0.0.1:56144 Accepted
-[Tue Aug 26 16:14:37 2025] 127.0.0.1:56144 [200]: GET /css/style.css
-[Tue Aug 26 16:14:37 2025] 127.0.0.1:56144 Closing
-[Tue Aug 26 16:14:37 2025] 127.0.0.1:56150 Accepted
-[Tue Aug 26 16:14:37 2025] 127.0.0.1:56150 [200]: GET /index.html
-[Tue Aug 26 16:14:37 2025] 127.0.0.1:56150 Closing
-[Tue Aug 26 16:14:38 2025] 127.0.0.1:56164 Accepted
-[Tue Aug 26 16:14:38 2025] 127.0.0.1:56164 [200]: GET /css/style.css
-[Tue Aug 26 16:14:38 2025] 127.0.0.1:56164 Closing
-[Tue Aug 26 16:14:38 2025] 127.0.0.1:56178 Accepted
-[Tue Aug 26 16:14:38 2025] 127.0.0.1:56178 [200]: GET /index.html
-[Tue Aug 26 16:14:38 2025] 127.0.0.1:56178 Closing
-[Tue Aug 26 16:14:38 2025] 127.0.0.1:56182 Accepted
-[Tue Aug 26 16:14:38 2025] 127.0.0.1:56182 [200]: GET /css/style.css
-[Tue Aug 26 16:14:38 2025] 127.0.0.1:56182 Closing
+[Tue Aug 26 16:16:12 2025] PHP 8.3.6 Development Server (http://127.0.0.1:8080) started
+[Tue Aug 26 16:16:14 2025] 127.0.0.1:39122 Accepted
+[Tue Aug 26 16:16:14 2025] 127.0.0.1:39122 [200]: GET /index.html
+[Tue Aug 26 16:16:14 2025] 127.0.0.1:39122 Closing
+[Tue Aug 26 16:16:14 2025] 127.0.0.1:39130 Accepted
+[Tue Aug 26 16:16:14 2025] 127.0.0.1:39130 [200]: GET /css/style.css
+[Tue Aug 26 16:16:14 2025] 127.0.0.1:39130 Closing

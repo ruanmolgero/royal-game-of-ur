@@ -16,6 +16,7 @@
                 <li><a href="#sobre">Sobre o Projeto</a></li>
                 <li><a href="#objetivos">Objetivos</a></li>
                 <li><a href="#disciplina">Disciplina</a></li>
+                <li><a href="#game">Jogar</a></li>
                 <li><a href="DOM.html">Árvore DOM</a></li>
             </ul>
         </nav>
@@ -23,6 +24,32 @@
 
     <div class="container">
         <main>
+            <section id="game">
+                <h2>O Jogo</h2>
+                <div id="game-status">
+                    <p>Vez do Jogador: <span id="current-player">1</span></p>
+                    <p>Resultado dos Dados: <span id="dice-roll"></span></p>
+                </div>
+
+                <div id="game-container">
+                    <div id="player1-area" class="player-area">
+                        <h3>Peças (J1)</h3>
+                        <div id="p1-pieces" class="pieces-container"></div>
+                    </div>
+
+                    <div id="game-board"></div>
+
+                    <div id="player2-area" class="player-area">
+                        <h3>Peças (J2)</h3>
+                        <div id="p2-pieces" class="pieces-container"></div>
+                    </div>
+                </div>
+
+                <button id="roll-dice-btn">Lançar Dados</button>
+            </section>
+            
+            <hr style="margin: 40px 0;">
+
             <section id="sobre">
                 <h2>Sobre o Projeto</h2>
                 <p>Esta página apresenta o desenvolvimento de uma versão web do antigo jogo de tabuleiro "The Royal Game of Ur".</p>
@@ -57,6 +84,8 @@
             <p>Florianópolis, SC - 2025</p>
         </address>
     </footer>
+
+    <script src="js/game.js"></script>
 
 </body>
 </html>
