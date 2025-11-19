@@ -18,8 +18,10 @@
   },
   "homepage": "https://github.com/ruanmolgero/royal-game-of-ur#readme",
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
+    "express-session": "^1.18.2",
     "mongoose": "^8.20.0",
     "socket.io": "^4.8.1"
   },

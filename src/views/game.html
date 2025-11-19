@@ -49,6 +49,20 @@
         </section>
     </div>
 
+    <div id="chat-container">
+        <div id="chat-header">
+            <span>Bate-papo</span>
+            <button id="toggle-chat" style="background:none; border:none; color:white; cursor:pointer;">−</button>
+        </div>
+        <div id="chat-messages">
+            <div class="message system">Bem-vindo ao chat!</div>
+        </div>
+        <form id="chat-form">
+            <input type="text" id="chat-input" placeholder="Digite sua mensagem..." autocomplete="off">
+            <button type="submit">➤</button>
+        </form>
+    </div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/game.js"></script>
 

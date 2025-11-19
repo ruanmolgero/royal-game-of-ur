@@ -195,6 +195,17 @@ class RoyalGameOfUr {
     getState() {
         return this.state;
     }
+
+    getBotMove() {
+        const validMoves = this.calculateValidMoves();
+        
+        if (validMoves.length === 0) return null;
+
+        // Lógica Simples: Escolhe um movimento aleatório
+        // Futuro: Priorizar capturas ou rosetas aqui
+        const randomIndex = Math.floor(Math.random() * validMoves.length);
+        return validMoves[randomIndex];
+    }
 }
 
 module.exports = RoyalGameOfUr;

@@ -1,4 +1,11 @@
-const socket = io();
+// const socket = io();
+const urlParams = new URLSearchParams(window.location.search);
+const gameMode = urlParams.get('mode');
+const socket = io({
+    query: {
+        mode: gameMode
+    }
+});
 let myPlayerIndex = null;
 let currentState = null;
 
@@ -28,6 +35,13 @@ const rosetteCells = ['p1-4', 'p2-4', 'c-4', 'p1-6', 'p2-6'];
 // 1. Entrando na sala
 socket.on('init-game', (data) => {
     myPlayerIndex = data.playerIndex;
+
+    if (gameMode === 'bot') {
+        document.title = `Royal Game of Ur - VS BOT`;
+        const p2Title = document.querySelector('#player2-area h3');
+        if(p2Title) p2Title.textContent = "ROBÔ (J2)";
+    }
+
     if (myPlayerIndex === -1) {
         alert('Modo Espectador (Sala Cheia)');
         document.title = `Royal Game of Ur - Espectador`;
@@ -154,3 +168,67 @@ if (themeBtn) {
         localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
     });
 }
+
+// ============================================================
+// SISTEMA DE CHAT
+// ============================================================
+
+const chatForm = document.getElementById('chat-form');
+const chatInput = document.getElementById('chat-input');
+const chatMessages = document.getElementById('chat-messages');
+const chatContainer = document.getElementById('chat-container');
+const toggleChatBtn = document.getElementById('toggle-chat');
+const chatHeader = document.getElementById('chat-header');
+
+// 1. Enviar mensagem (Do Cliente para o Servidor)
+if (chatForm) { // Verifica se o chat existe na página
+    chatForm.addEventListener('submit', (e) => {
+        e.preventDefault(); // Evita recarregar a página
+        const text = chatInput.value.trim();
+        
+        // Só envia se tiver texto
+        if (text) {
+            socket.emit('send-chat', text);
+            chatInput.value = ''; // Limpa o campo
+        }
+    });
+}
+
+// 2. Receber mensagem (Do Servidor para o Cliente)
+socket.on('receive-chat', (data) => {
+    const msgDiv = document.createElement('div');
+    msgDiv.classList.add('message');
+    
+    // Verifica se fui eu que mandei (para pintar de azul/direita)
+    // myPlayerIndex é a variável global que definimos lá no topo do arquivo
+    if (data.senderId === myPlayerIndex && myPlayerIndex !== -1) {
+        msgDiv.classList.add('my-message');
+        msgDiv.textContent = data.msg; // Minha mensagem: só o texto
+    } else {
+        // Mensagem de outros: Mostra o nome em negrito
+        const senderSpan = document.createElement('strong');
+        senderSpan.textContent = data.sender + ': ';
+        msgDiv.appendChild(senderSpan);
+        msgDiv.appendChild(document.createTextNode(data.msg));
+    }
+
+    // Adiciona na tela
+    if (chatMessages) {
+        chatMessages.appendChild(msgDiv);
+        // Auto-scroll para a última mensagem
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+});
+
+// 3. Minimizar/Maximizar Janela
+function toggleChat() {
+    if (chatContainer && toggleChatBtn) {
+        chatContainer.classList.toggle('minimized');
+        // Muda o ícone entre + e -
+        toggleChatBtn.textContent = chatContainer.classList.contains('minimized') ? '+' : '−';
+    }
+}
+
+// Adiciona cliques para minimizar
+if (toggleChatBtn) toggleChatBtn.addEventListener('click', toggleChat);
+if (chatHeader) chatHeader.addEventListener('click', toggleChat);
