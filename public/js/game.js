@@ -1,9 +1,13 @@
-// const socket = io();
+// Captura parametros da URL
 const urlParams = new URLSearchParams(window.location.search);
 const gameMode = urlParams.get('mode');
+const roomId = urlParams.get('room'); // <--- PEGA O ID DA SALA
+
+// Conecta passando os dados
 const socket = io({
     query: {
-        mode: gameMode
+        mode: gameMode,
+        roomId: roomId // <--- ENVIA PRO SERVIDOR
     }
 });
 let myPlayerIndex = null;
@@ -135,15 +139,28 @@ function createPieceElement(player, pieceIndex, state) {
     piece.dataset.player = player;
     piece.dataset.pieceIndex = pieceIndex;
 
-    // Verifica se a peça pode se mover para dar highlight
-    // (Lógica visual: se é minha vez, fase de movimento, e é minha peça)
+    // Lógica de Interação (apenas para o jogador atual e na fase de movimento)
     if (state.phase === 'move' && 
         state.currentPlayer === player && 
-        state.currentPlayer === myPlayerIndex &&
-        state.validMoves && state.validMoves.includes(pieceIndex)) {
+        state.currentPlayer === myPlayerIndex) {
             
-        piece.classList.add('movable'); 
-        piece.addEventListener('click', handlePieceClick);
+        // CASO 1: Movimento Válido (Verde)
+        if (state.validMoves && state.validMoves.includes(pieceIndex)) {
+            piece.classList.add('movable'); 
+            piece.addEventListener('click', handlePieceClick);
+        } 
+        // CASO 2: Movimento Inválido com Razão (Vermelho)
+        else if (state.moveDiagnostics && state.moveDiagnostics[pieceIndex]) {
+            piece.classList.add('invalid-move');
+            
+            // Salva a mensagem no elemento para usar no hover
+            piece.dataset.errorMsg = state.moveDiagnostics[pieceIndex];
+            
+            // Eventos do Tooltip
+            piece.addEventListener('mouseenter', showTooltip);
+            piece.addEventListener('mouseleave', hideTooltip);
+            piece.addEventListener('mousemove', moveTooltip); // Para seguir o mouse
+        }
     }
 
     return piece;
@@ -232,3 +249,27 @@ function toggleChat() {
 // Adiciona cliques para minimizar
 if (toggleChatBtn) toggleChatBtn.addEventListener('click', toggleChat);
 if (chatHeader) chatHeader.addEventListener('click', toggleChat);
+
+// --- SISTEMA DE TOOLTIP ---
+const tooltip = document.getElementById('move-tooltip');
+
+function showTooltip(e) {
+    const msg = e.target.dataset.errorMsg;
+    if (msg && tooltip) {
+        tooltip.textContent = msg;
+        tooltip.style.display = 'block';
+        moveTooltip(e); // Posiciona imediatamente
+    }
+}
+
+function hideTooltip() {
+    if (tooltip) tooltip.style.display = 'none';
+}
+
+function moveTooltip(e) {
+    if (tooltip) {
+        // Posiciona um pouco acima e a direita do mouse
+        tooltip.style.left = e.pageX + 15 + 'px';
+        tooltip.style.top = e.pageY + 15 + 'px';
+    }
+}

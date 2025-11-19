@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <title>Lobby - Salas Disponíveis</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .lobby-container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        .room-list { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .room-list th, .room-list td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        .room-list th { background-color: var(--cor-primaria); color: white; }
+        .btn-join { padding: 5px 15px; background: var(--cor-secundaria); color: white; border-radius: 4px; text-decoration: none; }
+        .create-room-box { background: #eee; padding: 15px; border-radius: 5px; display: flex; gap: 10px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Lista de Salas</h1>
+        <nav><a href="/">Voltar</a></nav>
+    </header>
+
+    <div class="container">
+        <div class="lobby-container">
+            
+            <div class="create-room-box">
+                <input type="text" id="room-name" placeholder="Nome da sua sala..." style="flex:1; padding: 8px;">
+                <button id="btn-create" class="btn-primary">Criar Sala</button>
+            </div>
+
+            <table class="room-list">
+                <thead>
+                    <tr>
+                        <th>Nome da Sala</th>
+                        <th>Jogadores</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="rooms-body">
+                    </tbody>
+            </table>
+            <p id="loading">Carregando salas...</p>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const roomsBody = document.getElementById('rooms-body');
+        const loading = document.getElementById('loading');
+
+        // Pede a lista ao conectar
+        socket.emit('request-lobby');
+
+        // Recebe a lista atualizada
+        socket.on('lobby-list', (rooms) => {
+            loading.style.display = 'none';
+            roomsBody.innerHTML = '';
+            
+            if(rooms.length === 0) {
+                roomsBody.innerHTML = '<tr><td colspan="3">Nenhuma sala criada. Crie a primeira!</td></tr>';
+                return;
+            }
+
+            rooms.forEach(room => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${room.name}</td>
+                    <td>${room.players}/2</td>
+                    <td><a href="/game?room=${room.id}" class="btn-join">Entrar</a></td>
+                `;
+                roomsBody.appendChild(row);
+            });
+        });
+
+        // Criar Sala
+        document.getElementById('btn-create').addEventListener('click', () => {
+            const name = document.getElementById('room-name').value;
+            if(name) {
+                socket.emit('create-room', name);
+            } else {
+                alert('Dê um nome para a sala!');
+            }
+        });
+
+        // Redireciona quando a sala é criada
+        socket.on('room-created', (roomId) => {
+            window.location.href = `/game?room=${roomId}`;
+        });
+    </script>
+</body>
+</html>

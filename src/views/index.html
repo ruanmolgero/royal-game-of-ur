@@ -9,7 +9,22 @@
 <body>
 
     <header>
+        <div class="user-actions">
+            <% if (user) { %>
+                <div class="logged-in-menu">
+                    <a href="/profile" class="user-link">
+                        <span class="user-avatar-small">👤</span> 
+                        Olá, <strong><%= user.username %></strong>
+                    </a>
+                    <a href="/auth/logout" class="btn-logout-small">Sair</a>
+                </div>
+            <% } else { %>
+                <a href="/login" class="btn-login-header">Entrar / Cadastrar</a>
+            <% } %>
+        </div>
+
         <h1>The Royal Game of Ur</h1>
+        
         <nav>
             <ul>
                 <li><a href="#game-selection">Jogar</a></li>
@@ -27,26 +42,33 @@
                 <p>Escolha seu modo de jogo:</p>
                 
                 <div class="menu-buttons">
-                    <!-- <button onclick="alert('Em breve...')" class="btn-primary disabled">Contra Bot</button> -->
-                     <a href="/game?mode=bot" class="btn-primary" style="background-color: #f39c12;">
+                    <a href="/game?mode=bot" class="btn-primary" style="background-color: #f39c12;">
                         Play vs Bot
                     </a>
                     
-                    <a href="/game" class="btn-primary">Jogar Online</a>
+                    <a href="/lobby" class="btn-primary">
+                        Jogar Online
+                    </a>
                 </div>
+                
+                <% if (!user) { %>
+                    <p style="font-size: 0.8rem; margin-top: 10px; color: #7f8c8d;">
+                        * Faça login para jogar online e salvar histórico.
+                    </p>
+                <% } %>
             </section>
 
             <hr>
 
             <section id="sobre">
                 <h2>Sobre o Projeto</h2>
-                <p>O Jogo Real de Ur é um dos jogos de tabuleiro mais antigos já descobertos, originário da antiga Mesopotâmia.</p>
+                <p>O Jogo Real de Ur é um dos jogos de tabuleiro mais antigos já descobertos, originário da antiga Mesopotâmia. Este projeto visa recriar a experiência online com suporte a multiplayer e bots.</p>
             </section>
 
             <section id="regras">
                 <h2>Regras Básicas</h2>
-                <p>O objetivo é percorrer o tabuleiro com suas 7 peças antes do adversário. Utilize os dados tetraédricos para mover.</p>
-                </section>
+                <p>O objetivo é percorrer o tabuleiro com suas 7 peças antes do adversário. Utilize os dados tetraédricos para mover. Cair na casa da Roseta concede um turno extra!</p>
+            </section>
 
             <section id="disciplina">
                 <h2>Disciplina</h2>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Reutiliza seus estilos de formulário e container */
+        body.profile-page {
+            background-color: #ecf0f1;
+            padding: 20px;
+        }
+        .profile-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .full-width { grid-column: span 2; }
+        
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        
+        .header-profile { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; }
+        .avatar-preview { width: 80px; height: 80px; border-radius: 50%; background: #ddd; border: 2px solid #333; }
+        
+        .btn-save { background: #27ae60; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; font-size: 1rem; }
+        .btn-logout { background: #c0392b; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px; float: right;}
+    </style>
+</head>
+<body class="profile-page">
+
+    <nav style="margin-bottom: 20px;">
+        <a href="/" style="font-weight: bold; color: #2c3e50;">&larr; Voltar ao Menu</a>
+    </nav>
+
+    <div class="profile-container">
+        <div class="header-profile">
+            <div class="avatar-preview"></div>
+            <div>
+                <h1><%= user.username %></h1>
+                <p>Partidas jogadas: <%= user.matchesPlayed %> | Vitórias: <%= user.matchesWon %></p>
+            </div>
+            <a href="/auth/logout" class="btn-logout">Sair</a>
+        </div>
+
+        <hr>
+
+        <form action="/auth/update" method="POST">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Idade</label>
+                    <input type="number" name="age" value="<%= user.age %>">
+                </div>
+                <div class="form-group">
+                    <label>Cidade</label>
+                    <input type="text" name="city" value="<%= user.location.city %>">
+                </div>
+                <div class="form-group">
+                    <label>Estado</label>
+                    <input type="text" name="state" value="<%= user.location.state %>">
+                </div>
+                <div class="form-group">
+                    <label>País</label>
+                    <input type="text" name="country" value="<%= user.location.country %>">
+                </div>
+                <div class="form-group full-width">
+                    <label>URL do Avatar (Imagem)</label>
+                    <input type="text" name="avatar" value="<%= user.avatar %>" placeholder="https://...">
+                </div>
+            </div>
+            <br>
+            <button type="submit" class="btn-save">Salvar Alterações</button>
+        </form>
+    </div>
+
+</body>
+</html>

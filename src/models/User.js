@@ -1,25 +1,30 @@
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true
+    username: { type: String, required: true, unique: true, trim: true },
+    password: { type: String, required: true }, // Hash
+    
+    // --- NOVOS CAMPOS OBRIGATÓRIOS ---
+    age: { type: Number, default: null },
+    location: {
+        city: { type: String, default: '' },
+        state: { type: String, default: '' },
+        country: { type: String, default: 'Brasil' }
     },
-    password: {
-        type: String,
-        required: true
+    avatar: { 
+        type: String, 
+        default: '/assets/default-avatar.png' // Caminho para imagem padrão
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    // Estatísticas do Jogo
+    
+    // --- DADOS DO SISTEMA ---
+    createdAt: { type: Date, default: Date.now },
+    isAdmin: { type: Boolean, default: false }, // Para o CRUD de Admin futuro
+    
+    // Estatísticas
     matchesPlayed: { type: Number, default: 0 },
     matchesWon: { type: Number, default: 0 },
     
-    // Configurações Visuais (Opcional, para salvar o tema)
+    // Configurações
     preferences: {
         theme: { type: String, default: 'light' }
     }

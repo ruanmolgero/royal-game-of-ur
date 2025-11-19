@@ -29,7 +29,7 @@ router.post('/register', async (req, res) => {
         req.session.userId = newUser._id;
         req.session.username = newUser.username;
         
-        res.redirect('/game');
+        res.redirect('/');
     } catch (err) {
         console.error('Erro no registro:', err);
         res.redirect('/login');
@@ -58,10 +58,34 @@ router.post('/login', async (req, res) => {
         req.session.userId = user._id;
         req.session.username = user.username;
 
-        res.redirect('/game');
+        res.redirect('/');
     } catch (err) {
         console.error('Erro no login:', err);
         res.redirect('/login');
+    }
+});
+
+// ROTA: Atualizar Perfil
+router.post('/update', async (req, res) => {
+    if (!req.session.userId) return res.redirect('/login');
+
+    try {
+        const { age, city, state, country, avatar } = req.body;
+        
+        await User.findByIdAndUpdate(req.session.userId, {
+            age: age,
+            location: {
+                city: city,
+                state: state,
+                country: country
+            },
+            avatar: avatar
+        });
+
+        res.redirect('/profile');
+    } catch (err) {
+        console.error(err);
+        res.redirect('/profile');
     }
 });
 

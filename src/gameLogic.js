@@ -33,7 +33,8 @@ class RoyalGameOfUr {
             phase: 'roll', // 'roll' ou 'move'
             winner: null,
             lastAction: 'Jogo iniciado',
-            validMoves: []
+            validMoves: [],
+            moveDiagnostics: {}
         };
         this.updateBoardMap();
     }
@@ -57,10 +58,54 @@ class RoyalGameOfUr {
 
     calculateValidMoves() {
         const pData = this.state.currentPlayer === 1 ? this.state.player1 : this.state.player2;
-        // Retorna um array apenas com os índices (0 a 6) das peças que passaram no teste
+        this.state.moveDiagnostics = {};
         return pData.pieces
-            .map((pos, idx) => this.validateMove(idx) ? idx : null)
+            .map((pos, idx) => {
+                const isValid = this.validateMove(idx);
+                if (isValid) {
+                    return idx;
+                } else {
+                    const reason = this.getInvalidReason(idx);
+                    if (reason) {
+                        this.state.moveDiagnostics[idx] = reason;
+                    }
+                    return null;
+                }
+            })
             .filter(idx => idx !== null);
+    }
+
+    getInvalidReason(pieceIndex) {
+        const pNum = this.state.currentPlayer;
+        const pData = pNum === 1 ? this.state.player1 : this.state.player2;
+        const path = pNum === 1 ? this.player1Path : this.player2Path;
+        const currentPos = pData.pieces[pieceIndex];
+
+        // 1. Peça já finalizada
+        if (currentPos === -2) return null; // Não exibe erro, peça já saiu
+
+        const newPos = currentPos === -1 ? this.state.diceResult - 1 : currentPos + this.state.diceResult;
+
+        // 2. Saída Exata
+        if (newPos > path.length) return "Saída: Precisa tirar o número exato.";
+
+        // 3. Casa Ocupada
+        const targetCellId = this.BOARD_LAYOUT[path[newPos]];
+        if (newPos < path.length) { // Se não for saída
+            const cellContent = this.state.board[targetCellId];
+
+            if (cellContent) {
+                // Bloqueio Amigo
+                if (cellContent.player === pNum) return "Bloqueado: Você já tem uma peça que ocupa a casa destino.";
+                
+                // Roseta Segura do Inimigo
+                if (this.rosetteCells.includes(targetCellId)) {
+                    return "Roseta Segura: Você não pode atacar com essa peça a roseta segura.";
+                }
+            }
+        }
+        
+        return null;
     }
 
     rollDice() {
