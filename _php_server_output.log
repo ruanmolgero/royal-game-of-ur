@@ -1,7 +1,0 @@
-[Tue Aug 26 16:16:12 2025] PHP 8.3.6 Development Server (http://127.0.0.1:8080) started
-[Tue Aug 26 16:16:14 2025] 127.0.0.1:39122 Accepted
-[Tue Aug 26 16:16:14 2025] 127.0.0.1:39122 [200]: GET /index.html
-[Tue Aug 26 16:16:14 2025] 127.0.0.1:39122 Closing
-[Tue Aug 26 16:16:14 2025] 127.0.0.1:39130 Accepted
-[Tue Aug 26 16:16:14 2025] 127.0.0.1:39130 [200]: GET /css/style.css
-[Tue Aug 26 16:16:14 2025] 127.0.0.1:39130 Closing

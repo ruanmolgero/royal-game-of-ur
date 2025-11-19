@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partida - Royal Game of Ur</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="game-page">
+
+    <div class="game-header">
+        <div class="room-info">Sala Pública</div>
+        
+        <div>Royal Game of Ur</div>
+
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <button id="theme-toggle" class="btn-exit" style="background: none; border: 1px solid rgba(255,255,255,0.3);">
+                🌗 Tema
+            </button>
+            
+            <a href="/" class="btn-exit">✕ Sair</a>
+        </div>
+    </div>
+
+    <div id="game-wrapper">
+        <section id="game">
+            <div id="game-status">
+                <p>Vez do Jogador: <span id="current-player">...</span></p>
+                <p>Dados: <span id="dice-roll">-</span></p>
+
+                <p id="game-message" style="font-size: 0.9rem; min-height: 1.5em; color: #f39c12; font-weight: bold;"></p>
+            </div>
+
+            <div id="game-container">
+                <div id="player1-area" class="player-area">
+                    <h3>J1</h3>
+                    <div id="p1-pieces" class="pieces-container"></div>
+                </div>
+
+                <div id="game-board"></div>
+
+                <div id="player2-area" class="player-area">
+                    <h3>J2</h3>
+                    <div id="p2-pieces" class="pieces-container"></div>
+                </div>
+            </div>
+
+            <button id="roll-dice-btn">Lançar Dados</button>
+        </section>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/game.js"></script>
+
+</body>
+</html>

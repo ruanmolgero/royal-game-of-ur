@@ -1,0 +1,340 @@
+/* ==========================================================================
+   1. VARIÁVEIS E RESET GERAL
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+:root {
+    --cor-primaria: #2c3e50;       /* Azul escuro */
+    --cor-secundaria: #3498db;     /* Azul claro */
+    --cor-fundo-light: #ecf0f1;    /* Cinza claro (Home) */
+    --cor-fundo-dark: #1f2b38;     /* Fundo do Jogo */
+    --cor-texto: #333;
+    --cor-header: #1f2b38;
+    --cor-amarelo: #f1c40f;        /* Destaques */
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background-color: var(--cor-fundo-light);
+    color: var(--cor-texto);
+    line-height: 1.6;
+}
+
+a {
+    color: var(--cor-secundaria);
+    text-decoration: none;
+}
+
+/* ==========================================================================
+   2. LAYOUT GERAL (HOME E MENU)
+   ========================================================================== */
+header, footer {
+    background-color: var(--cor-header);
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+}
+
+nav ul {
+    padding: 0;
+    list-style: none;
+}
+
+nav ul li {
+    display: inline-block;
+    margin: 0 15px;
+}
+
+nav a {
+    color: white;
+    font-weight: bold;
+}
+
+nav a:hover {
+    color: var(--cor-secundaria);
+}
+
+.container {
+    display: flex;
+    max-width: 1200px;
+    margin: 20px auto;
+    gap: 20px;
+}
+
+main {
+    flex: 3;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+aside {
+    flex: 1;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+section {
+    margin-bottom: 2rem;
+}
+
+/* Hero Section (Destaque da Home) */
+.hero-section {
+    text-align: center;
+    padding: 40px 0;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.menu-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.btn-primary {
+    display: inline-block;
+    padding: 15px 30px;
+    background-color: var(--cor-secundaria);
+    color: white;
+    border-radius: 5px;
+    font-size: 1.1em;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-primary:hover { background-color: #2980b9; }
+.btn-primary.disabled { background-color: #bdc3c7; cursor: not-allowed; }
+
+/* ==========================================================================
+   3. ESTRUTURA DA PÁGINA DE JOGO (BASE / LIGHT MODE)
+   ========================================================================== */
+/* O padrão agora é o Light Mode (Claro) */
+body.game-page {
+    background-color: var(--cor-fundo-light); /* Fundo claro padrão */
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    transition: background-color 0.3s ease; /* Transição suave ao trocar tema */
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: var(--cor-primaria); /* Cabeçalho sólido no light mode */
+    color: white;
+}
+
+.btn-exit {
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+.btn-exit:hover { background: rgba(255,255,255,0.1); }
+
+#game-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+#game {
+    text-align: center;
+    color: var(--cor-texto); /* Texto escuro no light mode */
+}
+
+/* ==========================================================================
+   4. TABULEIRO E PEÇAS (ESTILO GERAL)
+   ========================================================================== */
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(3, 60px); /* 3 Colunas */
+    grid-template-rows: repeat(8, 60px);    /* 8 Linhas */
+    gap: 5px;
+    margin: 20px auto;
+    width: fit-content;
+    background-color: var(--cor-primaria);
+    border: 5px solid var(--cor-header);
+    border-radius: 8px;
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+.cell {
+    width: 60px;
+    height: 60px;
+    background-color: #aba59c; /* Areia (Padrão) */
+    border: 1px solid #333;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    font-size: 1.5em;
+}
+
+.cell.rosette::after {
+    content: "🌸";
+    position: absolute; /* <--- Tira do fluxo do Flexbox */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centraliza perfeitamente */
+    z-index: 1; /* Fica atrás */
+    font-size: 2em;
+    opacity: 0.7; /* Um pouco transparente para não brigar com a peça */
+    pointer-events: none; /* Garante que o clique vá para a célula/peça */
+}
+
+.piece {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+    z-index: 10;
+    transition: transform 0.2s;
+    z-index: 10; /* Fica na frente */
+    position: relative; /* Garante que o z-index funcione */
+}
+.piece.movable {
+    cursor: pointer;
+    border: 3px solid #27ae60 !important; /* Verde mais sóbrio no light */
+    transform: scale(1.1);
+}
+
+/* Cores das peças (Padrão) */
+.player1 { background-color: #ffffff; border: 2px solid #000; }
+.player2 { background-color: #000000; border: 2px solid #fff; }
+
+/* ==========================================================================
+   5. INTERFACE DO JOGO - HUD (BASE / LIGHT MODE)
+   ========================================================================== */
+#game-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+/* Status e Áreas dos Jogadores no Light Mode (Visual Clean/Papel) */
+#game-status, .player-area {
+    background-color: white;
+    color: #333;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    padding: 15px;
+    min-width: 100px;
+    transition: all 0.3s ease;
+}
+
+.player-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+}
+
+#game-status span { font-weight: bold; color: #d35400; } /* Laranja escuro */
+
+.player-area h3 {
+    color: var(--cor-primaria);
+    border-bottom: 1px solid #eee;
+    margin: 0 0 15px 0;
+    padding-bottom: 5px;
+}
+
+#roll-dice-btn {
+    background-color: var(--cor-primaria); /* Fundo escuro padrão */
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 12px 30px;
+    border-radius: 25px; /* <--- AGORA SEMPRE REDONDINHO */
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+    
+    /* Adiciona uma sombra sutil no Light Mode também */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+}
+
+#roll-dice-btn:hover {
+    background-color: #34495e; /* Um pouco mais claro no hover */
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3); /* Sombra mais forte no hover */
+}
+
+#roll-dice-btn:disabled {
+    background-color: #555;
+    box-shadow: none;
+    color: #888;
+    cursor: not-allowed;
+}
+
+/* ==========================================================================
+   6. TEMA DARK (OVERRIDE - ONDE A MÁGICA ACONTECE)
+   ========================================================================== */
+/* Tudo aqui só se aplica se o body tiver a classe .dark-mode */
+
+body.game-page.dark-mode {
+    background-color: var(--cor-fundo-dark);
+    color: white;
+}
+
+/* Cabeçalho transparente no dark */
+body.game-page.dark-mode .game-header {
+    background-color: rgba(0,0,0,0.2);
+}
+
+/* Painéis Translúcidos */
+body.game-page.dark-mode #game-status,
+body.game-page.dark-mode .player-area {
+    background-color: rgba(0, 0, 0, 0.4);
+    color: #ecf0f1;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+body.game-page.dark-mode .player-area h3 {
+    color: var(--cor-secundaria); /* Azul Neon */
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+body.game-page.dark-mode #game-status span {
+    color: var(--cor-amarelo);
+}
+
+body.game-page.dark-mode #game {
+    color: white;
+}
+
+/* Botão Neon */
+body.game-page.dark-mode #roll-dice-btn {
+    background-color: #2980b9; /* Cor do fundo do botão no dark */
+    box-shadow: 0 0 15px rgba(52, 152, 219, 0.4); /* Brilho neon */
+}
+body.game-page.dark-mode #roll-dice-btn:hover {
+    background-color: var(--cor-secundaria);
+    box-shadow: 0 0 20px rgba(52, 152, 219, 0.7); /* Brilho mais intenso no hover */
+}
+
+/* Destaque de movimento Neon */
+body.game-page.dark-mode .piece.movable {
+    border-color: #00ff00 !important;
+    box-shadow: 0 0 10px #00ff00;
+}
