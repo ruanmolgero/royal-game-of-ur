@@ -53,7 +53,7 @@ app.get('/lobby', async (req, res) => {
 
 // Rota do Jogo
 app.get('/game', (req, res) => {
-    // Entra se for Bot, ou se tiver ID de sala na URL (Lobby), ou se tiver logado
+    // Entra se: Modo Bot OU Tem Sala (Espectador/Convidado) OU Está Logado
     if (req.query.mode === 'bot' || req.query.room || req.session.userId) {
         return res.render('game.html');
     }
@@ -139,28 +139,18 @@ io.on('connection', (socket) => {
         games.set(roomId, { 
             game: newGame, 
             name: roomName || `Sala ${roomId}`,
-            players: [], // Preenchemos quando entrarem de fato
+            players: [],
             type: 'public',
             hostId: socket.id
         });
         
-        // Manda o criador para a sala
         socket.emit('room-created', roomId);
         
-        // Atualiza a lista para todos no lobby
-        io.emit('lobby-list', Array.from(games.entries()));
+        io.emit('lobby-list', getPublicRooms());
     });
 
     socket.on('request-lobby', () => {
-        // Envia lista de salas públicas
-        const publicRooms = Array.from(games.entries())
-            .filter(([id, data]) => data.type === 'public')
-            .map(([id, data]) => ({
-                id, 
-                name: data.name, 
-                players: io.sockets.adapter.rooms.get(id)?.size || 0 
-            }));
-        socket.emit('lobby-list', publicRooms);
+        socket.emit('lobby-list', getPublicRooms());
     });
 
 
@@ -216,9 +206,78 @@ io.on('connection', (socket) => {
         }
     });
     
-    // Chat e Disconnect continuam similares...
-    // (Adicione aqui a lógica de chat usando getSocketGameRoom)
+    // --- CHAT ---
+    socket.on('send-chat', (msg) => {
+        const roomId = getSocketGameRoom(socket);
+        if (!roomId) return;
+
+        const safeMsg = String(msg).replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        
+        // Tenta identificar quem enviou baseando-se na sala
+        // (Lógica simplificada: se não for identificado, aparece como Espectador)
+        let senderName = 'Alguém'; 
+        let senderId = -1;
+        
+        // Você pode melhorar isso salvando socket.data.playerIndex no init-game
+        
+        io.to(roomId).emit('receive-chat', {
+            msg: safeMsg,
+            sender: senderName,
+            senderId: senderId
+        });
+    });
+
+    // --- DISCONNECT ---
+    socket.on('disconnect', () => {
+        const roomId = getSocketGameRoom(socket);
+        if (roomId) {
+            // Avisa na sala que alguém saiu
+            io.to(roomId).emit('receive-chat', { msg: "Alguém desconectou.", sender: "Sistema", senderId: -1 });
+            
+            const roomData = games.get(roomId);
+            if (roomData) {
+                // Se for Bot ou se a sala ficou vazia, deleta
+                const roomSize = io.sockets.adapter.rooms.get(roomId)?.size || 0;
+                if (roomData.type === 'bot' || roomSize === 0) {
+                    games.delete(roomId);
+                }
+            }
+        }
+        // Atualiza a lista de salas para todo mundo na Home
+        io.emit('lobby-list', getPublicRooms());
+    });
 });
+
+
+function getPublicRooms() {
+    return Array.from(games.entries())
+        .filter(([id, data]) => data.type === 'public')
+        .map(([id, data]) => {
+            // Conta conexões reais na sala
+            const roomSize = io.sockets.adapter.rooms.get(id)?.size || 0;
+            
+            // Lógica de Status
+            let status = 'waiting'; // Aguardando J2
+            let label = 'Aguardando Oponente';
+            
+            if (roomSize >= 2) {
+                status = 'playing';
+                label = 'Em Andamento';
+            }
+
+            // Espectadores = Total - 2 Jogadores (se houver menos de 2, é 0)
+            const spectators = Math.max(0, roomSize - 2);
+
+            return {
+                id,
+                name: data.name,
+                status, // 'waiting' ou 'playing'
+                label,
+                count: roomSize,
+                spectators
+            };
+        });
+}
 
 // Lógica do Bot (igual ao anterior)
 const playBotTurn = (roomId, gameInstance) => {
