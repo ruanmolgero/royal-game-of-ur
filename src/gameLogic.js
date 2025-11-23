@@ -111,7 +111,13 @@ class RoyalGameOfUr {
     rollDice() {
         if (this.state.phase !== 'roll') return null;
         
-        this.state.diceResult = Math.floor(Math.random() * 5);
+        let total = 0;
+        for (let i = 0; i < 4; i++) {
+            if (Math.random() > 0.5) { // 50% de chance
+                total++;
+            }
+        }
+        this.state.diceResult = total;
         
         this.state.lastAction = `Tirou ${this.state.diceResult}`;
 

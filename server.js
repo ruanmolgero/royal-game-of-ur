@@ -5,6 +5,7 @@ const session = require('express-session');
 const authRoutes = require('./src/routes/auth');
 const RoyalGameOfUr = require('./src/gameLogic');
 const User = require('./src/models/User');
+const Match = require('./src/models/Match');
 
 const app = express();
 const http = require('http').createServer(app);
@@ -52,10 +53,17 @@ app.get('/lobby', async (req, res) => {
 });
 
 // Rota do Jogo
-app.get('/game', (req, res) => {
-    // Entra se: Modo Bot OU Tem Sala (Espectador/Convidado) OU Está Logado
+app.get('/game', async (req, res) => {
+    // Verifica permissão (Bot, Sala ou Login)
     if (req.query.mode === 'bot' || req.query.room || req.session.userId) {
-        return res.render('game.html');
+        
+        let user = null;
+        if (req.session.userId) {
+            user = await User.findById(req.session.userId);
+        }
+        
+        // Manda o usuário para o front (se existir)
+        return res.render('game.html', { user });
     }
     res.redirect('/login');
 });
@@ -83,8 +91,11 @@ function getSocketGameRoom(socket) {
 
 io.on('connection', (socket) => {
     const mode = socket.handshake.query.mode;
-    const roomIdParam = socket.handshake.query.roomId; // Se vier do Lobby
+    const roomIdParam = socket.handshake.query.roomId;
+    const username = socket.handshake.query.username;
     
+    socket.data.username = username;
+
     // --- LÓGICA DE ENTRADA ---
     
     if (mode === 'bot') {
@@ -99,33 +110,53 @@ io.on('connection', (socket) => {
         socket.emit('init-game', { playerIndex: 1, gameState: newGame.getState() });
     } 
     else if (roomIdParam) {
-        // ENTRANDO VIA LOBBY (Sala Específica)
         const roomData = games.get(roomIdParam);
         
         if (roomData) {
             socket.join(roomIdParam);
             
-            // Verifica quantos tem na sala socket.io
+            // Pega o nome que salvamos no início da conexão
+            const userName = socket.data.username || 'Visitante';
             const numClients = io.sockets.adapter.rooms.get(roomIdParam)?.size || 0;
             
             if (numClients === 1) {
-                // Sou o primeiro (Criei a sala ou o outro caiu) - Reseto ou continuo?
-                // Por simplificação, assumimos que se tem 1 pessoa, ela é o host (J1)
-                // Mas se a sala já existe no Map, pode ser que J1 já esteja lá.
+                // J1 Re-entrando ou Host
+                if (!roomData.j1Socket) roomData.j1Socket = socket.id; 
                 
-                // Vamos simplificar: Se entrou via Lobby, verifica vagas
-                // Se já tem 2 jogadores registrados na lógica, entra como Espectador
-                
-                // TODO: Lógica robusta de reconexão
                 socket.emit('init-game', { playerIndex: 1, gameState: roomData.game.getState() });
                 
+                // Avisa se for reconexão (opcional) ou apenas entrada
+                // Geralmente J1 cria a sala, então não precisa avisar "entrou", 
+                // mas se ele caiu e voltou, é bom avisar.
+                io.to(roomIdParam).emit('receive-chat', { 
+                    msg: `${userName} (J1) conectou.`, 
+                    senderName: "Sistema", 
+                    username: "System" 
+                });
+                
             } else if (numClients === 2) {
-                // Sou o segundo (Desafiante)
+                // J2 Entrando
+                roomData.j2Socket = socket.id;
+                
                 socket.emit('init-game', { playerIndex: 2, gameState: roomData.game.getState() });
-                io.to(roomIdParam).emit('receive-chat', { msg: "Um jogador entrou!", sender: "Sistema", senderId: -1 });
+                
+                // AVISO PERSONALIZADO
+                io.to(roomIdParam).emit('receive-chat', { 
+                    msg: `${userName} entrou como Desafiante!`, 
+                    senderName: "Sistema", 
+                    username: "System" 
+                });
+
             } else {
-                // Sala cheia -> Espectador
+                // Espectador
                 socket.emit('init-game', { playerIndex: -1, gameState: roomData.game.getState() });
+                
+                // AVISO PERSONALIZADO PARA ESPECTADOR
+                io.to(roomIdParam).emit('receive-chat', { 
+                    msg: `${userName} está assistindo.`, 
+                    senderName: "Sistema", 
+                    username: "System" 
+                });
             }
         }
     }
@@ -141,7 +172,8 @@ io.on('connection', (socket) => {
             name: roomName || `Sala ${roomId}`,
             players: [],
             type: 'public',
-            hostId: socket.id
+            hostId: socket.id,
+            j1Socket: socket.id
         });
         
         socket.emit('room-created', roomId);
@@ -200,7 +232,11 @@ io.on('connection', (socket) => {
         
         if (newState) {
             io.to(roomId).emit('update-state', newState);
-            if (roomData.type === 'bot' && newState.currentPlayer === 2) {
+
+            if (newState.winner) {
+                handleGameEnd(roomId, newState, roomData);
+            }
+            else if (roomData.type === 'bot' && newState.currentPlayer === 2) {
                 playBotTurn(roomId, game);
             }
         }
@@ -213,37 +249,41 @@ io.on('connection', (socket) => {
 
         const safeMsg = String(msg).replace(/</g, "&lt;").replace(/>/g, "&gt;");
         
-        // Tenta identificar quem enviou baseando-se na sala
-        // (Lógica simplificada: se não for identificado, aparece como Espectador)
-        let senderName = 'Alguém'; 
-        let senderId = -1;
+        // Nome de Exibição (Pode ser "Jogador 1", "Ruan", etc)
+        // Tenta pegar o username salvo, ou usa "Anônimo"
+        const username = socket.data.username || 'Anônimo';
         
-        // Você pode melhorar isso salvando socket.data.playerIndex no init-game
-        
+        // Identifica se é J1, J2 ou Espectador para fins de exibição no chat
+        let displayLabel = username; 
+
         io.to(roomId).emit('receive-chat', {
             msg: safeMsg,
-            sender: senderName,
-            senderId: senderId
+            senderName: displayLabel, // O nome que aparece escrito
+            username: username        // O ID único para saber se fui eu
         });
     });
 
     // --- DISCONNECT ---
     socket.on('disconnect', () => {
         const roomId = getSocketGameRoom(socket);
+        const userName = socket.data.username || 'Alguém';
+
         if (roomId) {
-            // Avisa na sala que alguém saiu
-            io.to(roomId).emit('receive-chat', { msg: "Alguém desconectou.", sender: "Sistema", senderId: -1 });
+            // AVISO PERSONALIZADO DE SAÍDA
+            io.to(roomId).emit('receive-chat', { 
+                msg: `${userName} saiu da sala.`, 
+                senderName: "Sistema", 
+                username: "System" 
+            });
             
             const roomData = games.get(roomId);
             if (roomData) {
-                // Se for Bot ou se a sala ficou vazia, deleta
                 const roomSize = io.sockets.adapter.rooms.get(roomId)?.size || 0;
                 if (roomData.type === 'bot' || roomSize === 0) {
                     games.delete(roomId);
                 }
             }
         }
-        // Atualiza a lista de salas para todo mundo na Home
         io.emit('lobby-list', getPublicRooms());
     });
 });
@@ -279,26 +319,112 @@ function getPublicRooms() {
         });
 }
 
-// Lógica do Bot (igual ao anterior)
+// Lógica do Bot (IA)
 const playBotTurn = (roomId, gameInstance) => {
+    // 1. Segurança: Verifica se a sala ainda existe
     if (!games.has(roomId)) return;
+
+    // Delay inicial para rolar os dados (simula "pensar")
     setTimeout(() => {
+        // Verifica novamente antes de agir (caso a sala tenha sido deletada no delay)
+        if (!games.has(roomId)) return;
+
         const rollState = gameInstance.rollDice();
         io.to(roomId).emit('update-state', rollState);
+
+        // Se o bot puder mover (fase 'move')
         if (rollState.phase === 'move') {
+            
+            // Delay secundário para escolher a peça
             setTimeout(() => {
+                if (!games.has(roomId)) return;
+
                 const bestMove = gameInstance.getBotMove();
+                
                 if (bestMove !== null) {
                     const moveState = gameInstance.movePiece(bestMove);
                     io.to(roomId).emit('update-state', moveState);
-                    if (moveState.currentPlayer === 2 && !moveState.winner) playBotTurn(roomId, gameInstance);
+                    
+                    // --- VERIFICAÇÃO DE VITÓRIA (CRUCIAL) ---
+                    if (moveState.winner) {
+                        const roomData = games.get(roomId);
+                        handleGameEnd(roomId, moveState, roomData);
+                        return; // Para a execução aqui, o jogo acabou
+                    }
+
+                    // Se caiu na Roseta (ainda é a vez dele), joga de novo
+                    if (moveState.currentPlayer === 2) {
+                        playBotTurn(roomId, gameInstance); // Recursão
+                    }
                 }
-            }, 750);
+            }, 1000); // Delay do movimento (1 segundo)
         } else {
-             if (rollState.currentPlayer === 2) playBotTurn(roomId, gameInstance);
+             // Se tirou 0 ou não tem movimentos válidos
+             // Se por acaso ainda for a vez dele (ex: regra específica), tenta de novo
+             if (rollState.currentPlayer === 2) {
+                 playBotTurn(roomId, gameInstance);
+             }
         }
-    }, 750);
+    }, 1000); // Delay dos dados (1 segundo)
 };
+
+async function handleGameEnd(roomId, gameState, roomData) {
+    if (!gameState.winner) return;
+
+    console.log(`🏆 Jogo ${roomId} acabou! Vencedor: Jogador ${gameState.winner}`);
+
+    // 1. Identificar nomes dos jogadores
+    // (Em produção, buscaríamos os User Objects reais pelos socket IDs)
+    // Aqui vamos usar os nomes que salvamos no socket.data se possível, ou genéricos
+    
+    // Precisamos acessar os sockets conectados na sala para pegar os nomes
+    const sockets = await io.in(roomId).fetchSockets();
+    let p1Name = "Jogador 1";
+    let p2Name = roomData.type === 'bot' ? "Robô" : "Jogador 2";
+
+    sockets.forEach(s => {
+        if (s.id === roomData.j1Socket) p1Name = s.data.username;
+        if (s.id === roomData.j2Socket) p2Name = s.data.username;
+    });
+
+    const winnerName = gameState.winner === 1 ? p1Name : p2Name;
+
+    // 2. Salvar no MongoDB
+    try {
+        const match = new Match({
+            player1: p1Name,
+            player2: p2Name,
+            winner: winnerName,
+            mode: roomData.type
+        });
+        await match.save();
+        console.log("✅ Partida salva no histórico!");
+
+        // 3. Atualizar status dos usuários (Opcional/Avançado)
+        // Se p1Name for um usuário real, User.findOneAndUpdate(...)
+        // Vamos fazer isso se o nome não for "Visitante_..."
+        if (!p1Name.startsWith('Visitante')) {
+            await User.findOneAndUpdate({ username: p1Name }, { 
+                $inc: { matchesPlayed: 1, matchesWon: (gameState.winner === 1 ? 1 : 0) } 
+            });
+        }
+        if (!p2Name.startsWith('Visitante') && roomData.type !== 'bot') {
+             await User.findOneAndUpdate({ username: p2Name }, { 
+                $inc: { matchesPlayed: 1, matchesWon: (gameState.winner === 2 ? 1 : 0) } 
+            });
+        }
+
+    } catch (err) {
+        console.error("Erro ao salvar partida:", err);
+    }
+    
+    // Não deletamos a sala imediatamente para eles verem a mensagem de vitória
+    // Mas removemos da lista pública para ninguém mais entrar
+    if (roomData.type === 'public') {
+        roomData.type = 'finished'; // Tira da lista do lobby
+        io.emit('lobby-list', getPublicRooms());
+    }
+}
 
 const PORT = 3000;
 http.listen(PORT, () => {

@@ -65,6 +65,10 @@
 
     <div id="move-tooltip" class="tooltip" style="display: none;"></div>
 
+    <script>
+        const currentUser = "<%= user ? user.username : 'Visitante_' + Math.floor(Math.random()*1000) %>";
+    </script>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/game.js"></script>
 

@@ -1,13 +1,14 @@
 // Captura parametros da URL
 const urlParams = new URLSearchParams(window.location.search);
 const gameMode = urlParams.get('mode');
-const roomId = urlParams.get('room'); // <--- PEGA O ID DA SALA
+const roomId = urlParams.get('room');
 
 // Conecta passando os dados
 const socket = io({
     query: {
         mode: gameMode,
-        roomId: roomId // <--- ENVIA PRO SERVIDOR
+        roomId: roomId,
+        username: currentUser
     }
 });
 let myPlayerIndex = null;
@@ -211,28 +212,31 @@ if (chatForm) { // Verifica se o chat existe na página
     });
 }
 
-// 2. Receber mensagem (Do Servidor para o Cliente)
+// 2. Receber mensagem
 socket.on('receive-chat', (data) => {
     const msgDiv = document.createElement('div');
     msgDiv.classList.add('message');
     
-    // Verifica se fui eu que mandei (para pintar de azul/direita)
-    // myPlayerIndex é a variável global que definimos lá no topo do arquivo
-    if (data.senderId === myPlayerIndex && myPlayerIndex !== -1) {
+    // Caso especial para Mensagens de Sistema
+    if (data.username === "System") {
+        msgDiv.classList.add('system');
+        msgDiv.textContent = data.msg; // Só o texto, sem "Sistema:" antes
+    } 
+    // Minha mensagem
+    else if (data.username === currentUser) {
         msgDiv.classList.add('my-message');
-        msgDiv.textContent = data.msg; // Minha mensagem: só o texto
-    } else {
-        // Mensagem de outros: Mostra o nome em negrito
+        msgDiv.textContent = data.msg;
+    } 
+    // Mensagem dos outros
+    else {
         const senderSpan = document.createElement('strong');
-        senderSpan.textContent = data.sender + ': ';
+        senderSpan.textContent = data.senderName + ': ';
         msgDiv.appendChild(senderSpan);
         msgDiv.appendChild(document.createTextNode(data.msg));
     }
 
-    // Adiciona na tela
     if (chatMessages) {
         chatMessages.appendChild(msgDiv);
-        // Auto-scroll para a última mensagem
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 });
