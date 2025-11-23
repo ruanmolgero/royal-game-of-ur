@@ -753,3 +753,44 @@ body.game-page.dark-mode #chat-input {
     border: 1px solid #e74c3c;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
+
+/* ==========================================================================
+   12. ESTILOS DE TEXTO RICO (SOBRE/REGRAS)
+   ========================================================================== */
+.info-card h2 {
+    color: var(--cor-primaria);
+    border-left: 5px solid var(--cor-secundaria);
+    padding-left: 15px;
+    margin-top: 40px;
+}
+.info-card h2:first-child { margin-top: 0; }
+
+.info-card h3 {
+    color: #555;
+    margin-top: 25px;
+    font-size: 1.1rem;
+}
+
+.info-card p {
+    color: #666;
+    margin-bottom: 15px;
+    text-align: justify;
+}
+
+.info-card ul {
+    list-style-type: none; /* Remove bolinhas padrão */
+    padding: 0;
+}
+
+.info-card ul li {
+    background-color: #f9f9f9;
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    border-left: 3px solid #ddd;
+    border-radius: 0 5px 5px 0;
+    color: #555;
+}
+
+.info-card ul li strong {
+    color: var(--cor-primaria);
+}

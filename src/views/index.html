@@ -60,17 +60,70 @@
 
                 <section id="sobre">
                     <h3>Sobre o Projeto</h3>
-                    <p>O Jogo Real de Ur é um dos jogos de tabuleiro mais antigos já descobertos, originário da antiga Mesopotâmia. Este projeto visa recriar a experiência online com suporte a multiplayer e bots.</p>
+                    <!-- <p>O Jogo Real de Ur é um dos jogos de tabuleiro mais antigos já descobertos, originário da antiga Mesopotâmia. Este projeto visa recriar a experiência online com suporte a multiplayer e bots.</p> -->
+                    <p>
+                        O <strong>Jogo Real de Ur</strong> é um dos jogos de tabuleiro mais antigos da história, datado de aproximadamente 2600 a.C. 
+                        Tabuleiros deste jogo foram encontrados pelo arqueólogo Sir Leonard Woolley nas Tumbas Reais de Ur, no atual Iraque, durante a década de 1920.
+                    </p>
+                    <p>
+                        Por milênios, as regras foram esquecidas. Foi somente no início dos anos 80 que o curador do Museu Britânico, 
+                        <strong>Dr. Irving Finkel</strong>, decifrou uma tabuleta cuneiforme antiga que descrevia como o jogo era jogado. 
+                        Este projeto é uma recriação digital baseada nessa tradução histórica.
+                    </p>
                 </section>
 
                 <section id="regras">
                     <h3>Regras Básicas</h3>
-                    <p>O objetivo é percorrer o tabuleiro com suas 7 peças antes do adversário. Utilize os dados tetraédricos para mover. Cair na casa da Roseta concede um turno extra!</p>
+                    <!-- <p>O objetivo é percorrer o tabuleiro com suas 7 peças antes do adversário. Utilize os dados tetraédricos para mover. Cair na casa da Roseta concede um turno extra!</p> -->
+                     <div class="rules-container">
+                        <p>O objetivo é ser o primeiro a levar todas as suas <strong>7 peças</strong> do início ao fim do tabuleiro.</p>
+                        
+                        <h3>1. Os Dados</h3>
+                        <p>
+                            O jogo utiliza 4 dados tetraédricos. Cada dado tem 2 pontas marcadas e 2 vazias.
+                            A soma das pontas marcadas define quantas casas você anda (de 0 a 4).
+                        </p>
+                        
+                        <h3>2. O Tabuleiro e o Caminho</h3>
+                        <p>
+                            Existem três zonas no tabuleiro:
+                        </p>
+                        <ul>
+                            <li><strong>Zona Segura (Início):</strong> Os primeiros 4 quadrados do seu lado.</li>
+                            <li><strong>Zona de Guerra (Meio):</strong> A linha central de 8 quadrados. Aqui você pode capturar e ser capturado.</li>
+                            <li><strong>Zona Segura (Fim):</strong> Os últimos 2 quadrados do seu lado antes da saída.</li>
+                        </ul>
+
+                        <h3>3. Movimento e Captura</h3>
+                        <ul>
+                            <li>Você precisa tirar um número exato para colocar uma peça no tabuleiro.</li>
+                            <li>Se você cair em uma casa ocupada por uma peça inimiga (na Zona de Guerra), a peça inimiga é <strong>capturada</strong> e volta para o início.</li>
+                            <li>Você nunca pode andar para uma casa que já tenha uma peça sua.</li>
+                        </ul>
+
+                        <h3>4. A Roseta (🌸)</h3>
+                        <p>As casas marcadas com uma flor (Roseta) são especiais:</p>
+                        <ul>
+                            <li><strong>Turno Extra:</strong> Se cair nela, você joga os dados novamente.</li>
+                            <li><strong>Imunidade:</strong> A peça na Roseta central <strong>não pode ser capturada</strong>.</li>
+                        </ul>
+                        
+                        <h3>5. Vencendo</h3>
+                        <p>Para tirar uma peça do tabuleiro, você precisa de um lançamento de dados exato para "sair" (como se fosse a casa 15). O primeiro a retirar as 7 peças vence.</p>
+                    </div>
                 </section>
 
                 <section id="disciplina">
                     <h3>Disciplina</h3>
-                    <p>Desenvolvido para <strong>INE5646 - Programação para Web</strong> (UFSC).</p>
+                    <!-- <p>Desenvolvido para <strong>INE5646 - Programação para Web</strong> (UFSC).</p> -->
+                     <p>
+                        Este sistema foi desenvolvido como requisito avaliativo para a disciplina 
+                        <strong>INE5646 - Programação para Web</strong> da Universidade Federal de Santa Catarina (UFSC).
+                    </p>
+                    <p>
+                        <strong>Integrantes:</strong> Ruan Luiz Molgero Lopes.<br>
+                        <strong>Tecnologias:</strong> Node.js, Express, Socket.io, MongoDB e WebRTC.
+                    </p>
                 </section>
             </main>
 
