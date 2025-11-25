@@ -82,42 +82,66 @@ function handlePieceClick(event) {
 }
 
 // --- RENDERIZAÇÃO (DESENHAR O ESTADO) ---
-
 function renderGame(state) {
     currentState = state;
 
-    // Atualiza HUD
+    // 1. Atualiza Texto Superior
     playerTurnElement.textContent = state.currentPlayer;
-    diceRollElement.textContent = state.diceResult;
-
-    // Se existir lastAction, mostra. Se não, limpa.
     const msgElement = document.getElementById('game-message');
-    if (msgElement) {
-        msgElement.textContent = state.lastAction || '';
+    if (msgElement) msgElement.textContent = state.lastAction || '';
+
+    // 2. MOVER OS CONTROLES (A Mágica acontece aqui)
+    const controlsNode = document.getElementById('active-turn-controls');
+    const p1Slot = document.getElementById('p1-controls-slot');
+    const p2Slot = document.getElementById('p2-controls-slot');
+
+    // Torna visível
+    controlsNode.style.display = 'block';
+
+    // Move o nó HTML para o pai correto
+    if (state.currentPlayer === 1) {
+        p1Slot.appendChild(controlsNode);
+    } else {
+        p2Slot.appendChild(controlsNode);
     }
 
-    // Habilita/Desabilita Botão
+    // 3. Atualiza Visual dos Dados
+    const diceTotalText = document.getElementById('dice-total-text');
+    const totalRolled = state.diceResult !== null ? state.diceResult : '-';
+    if (diceTotalText) diceTotalText.textContent = totalRolled;
+
+    const diceElements = document.querySelectorAll('.tetra-die');
+    if (state.diceResult !== null) {
+        let marks = Array(4).fill(false);
+        for(let i = 0; i < state.diceResult; i++) marks[i] = true;
+        marks.sort(() => Math.random() - 0.5);
+
+        diceElements.forEach((die, index) => {
+            if (marks[index]) die.classList.add('marked');
+            else die.classList.remove('marked');
+        });
+    } else {
+        diceElements.forEach(die => die.classList.remove('marked'));
+    }
+
+    // 4. Estado do Botão
+    // Habilita se for minha vez E fase de rolar
     const isMyTurn = (myPlayerIndex === state.currentPlayer);
     rollDiceBtn.disabled = !(isMyTurn && state.phase === 'roll');
 
     // Mensagem de vitória
-    if (state.winner) {
-        alert(`JOGADOR ${state.winner} VENCEU!`);
-    }
+    if (state.winner) alert(`JOGADOR ${state.winner} VENCEU!`);
 
-    // Renderiza Tabuleiro
+    // 5. Renderiza Tabuleiro e Peças (Igual antes)
     boardElement.innerHTML = '';
     p1PiecesContainer.innerHTML = '';
     p2PiecesContainer.innerHTML = '';
 
-    // Cria células
     BOARD_LAYOUT.forEach(cellId => {
         const cell = document.createElement('div');
         if (cellId) {
             cell.classList.add('cell');
             if (rosetteCells.includes(cellId)) cell.classList.add('rosette');
-            
-            // Verifica se tem peça nessa célula no estado do servidor
             if (state.board[cellId]) {
                 const pieceInfo = state.board[cellId];
                 const piece = createPieceElement(pieceInfo.player, pieceInfo.pieceIndex, state);
@@ -129,7 +153,6 @@ function renderGame(state) {
         boardElement.appendChild(cell);
     });
 
-    // Renderiza peças na base (que ainda não entraram: valor -1)
     renderWaitingPieces(1, state.player1, p1PiecesContainer, state);
     renderWaitingPieces(2, state.player2, p2PiecesContainer, state);
 }

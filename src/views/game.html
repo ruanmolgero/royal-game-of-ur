@@ -24,28 +24,68 @@
 
     <div id="game-wrapper">
         <section id="game">
+            
             <div id="game-status">
-                <p>Vez do Jogador: <span id="current-player">...</span></p>
-                <p>Dados: <span id="dice-roll">-</span></p>
-
-                <p id="game-message" style="font-size: 0.9rem; min-height: 1.5em; color: #f39c12; font-weight: bold;"></p>
+                <p style="font-size: 1.2rem; margin: 0;">Vez do Jogador: <span id="current-player">...</span></p>
+                <p id="game-message" style="font-size: 0.9rem; min-height: 1.5em; color: #f39c12; font-weight: bold; margin-top: 5px;"></p>
             </div>
 
             <div id="game-container">
+                
                 <div id="player1-area" class="player-area">
-                    <h3>J1</h3>
-                    <div id="p1-pieces" class="pieces-container"></div>
+                    <div class="player-info-card">
+                        <h3>J1</h3>
+                        <div id="p1-pieces" class="pieces-container"></div>
+                    </div>
+                    
+                    <div id="p1-controls-slot" class="controls-slot"></div>
                 </div>
 
                 <div id="game-board"></div>
 
                 <div id="player2-area" class="player-area">
-                    <h3>J2</h3>
-                    <div id="p2-pieces" class="pieces-container"></div>
+                    <div class="player-info-card">
+                        <h3>J2</h3>
+                        <div id="p2-pieces" class="pieces-container"></div>
+                    </div>
+
+                    <div id="p2-controls-slot" class="controls-slot"></div>
                 </div>
             </div>
 
-            <button id="roll-dice-btn">Lançar Dados</button>
+            <div id="active-turn-controls" style="display: none;">
+                
+                <div class="dice-wrapper">
+                    <div class="dice-grid">
+                        <div class="tetra-die"></div>
+                        <div class="tetra-die"></div>
+                        <div class="tetra-die"></div>
+                        <div class="tetra-die"></div>
+                    </div>
+                    <div class="dice-total">
+                        Total: <span id="dice-total-text">-</span>
+                    </div>
+                </div>
+
+                <button id="roll-dice-btn">JOGAR</button>
+            </div>
+
+            <div id="active-turn-controls" style="display: none;">
+                
+                <div class="dice-grid">
+                    <div class="tetra-die"></div>
+                    <div class="tetra-die"></div>
+                    <div class="tetra-die"></div>
+                    <div class="tetra-die"></div>
+                </div>
+                
+                <div style="text-align: center; font-size: 0.8rem; margin-bottom: 5px; opacity: 0.8;">
+                    Total: <span id="dice-total-text">-</span>
+                </div>
+
+                <button id="roll-dice-btn">Lançar</button>
+            </div>
+
         </section>
     </div>
 
