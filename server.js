@@ -1,4 +1,5 @@
 const express = require('express');
+const helmet = require('helmet');
 const path = require('path');
 const mongoose = require('mongoose');
 const session = require('express-session');
@@ -13,6 +14,9 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
 // --- MIDDLEWARES ---
+app.use(helmet({
+    contentSecurityPolicy: false,
+}));
 app.use(express.urlencoded({ extended: true })); 
 app.use(express.json());
 app.use(session({
