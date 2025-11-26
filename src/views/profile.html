@@ -47,7 +47,24 @@
             <div class="avatar-preview"></div>
             <div>
                 <h1><%= user.username %></h1>
-                <p>Partidas jogadas: <%= user.matchesPlayed %> | Vitórias: <%= user.matchesWon %></p>
+
+                <% 
+                    const pvpRate = user.matchesPlayed > 0 ? Math.round((user.matchesWon / user.matchesPlayed) * 100) : 0;
+                    const botRate = user.botMatchesPlayed > 0 ? Math.round((user.botWins / user.botMatchesPlayed) * 100) : 0;
+                %>
+
+                <div style="margin-top: 10px; line-height: 1.8;">
+                    <div>
+                        <strong>⚔️ Ranked (PvP):</strong> 
+                        <%= user.matchesWon %> / <%= user.matchesPlayed %> 
+                        <span style="color: #7f8c8d; font-size: 0.9em;">(<%= pvpRate %>%)</span>
+                    </div>
+                    <div>
+                        <strong>🤖 Treino (Bot):</strong> 
+                        <%= user.botWins %> / <%= user.botMatchesPlayed %> 
+                        <span style="color: #7f8c8d; font-size: 0.9em;">(<%= botRate %>%)</span>
+                    </div>
+                </div>
             </div>
             <a href="/auth/logout" class="btn-logout">Sair</a>
         </div>

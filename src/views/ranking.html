@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Ranking - Royal Game of Ur</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Estilos específicos do Ranking */
+        .ranking-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .ranking-table th {
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid var(--cor-primaria);
+            color: var(--cor-primaria);
+        }
+        
+        .ranking-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        /* Medalhas para o Top 3 */
+        .rank-number {
+            font-weight: bold;
+            color: #777;
+            width: 50px;
+            text-align: center;
+        }
+        .rank-1 .rank-number { color: #f1c40f; font-size: 1.5rem; } /* Ouro */
+        .rank-2 .rank-number { color: #bdc3c7; font-size: 1.3rem; } /* Prata */
+        .rank-3 .rank-number { color: #cd7f32; font-size: 1.2rem; } /* Bronze */
+        
+        .win-rate {
+            font-size: 0.85rem;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="user-actions">
+            <% if (user) { %>
+                <div class="logged-in-menu">
+                    <a href="/profile" class="user-link">👤 <%= user.username %></a>
+                    <a href="/auth/logout" class="btn-logout-small">Sair</a>
+                </div>
+            <% } else { %>
+                <a href="/login" class="btn-login-header">Entrar</a>
+            <% } %>
+        </div>
+        <h1>The Royal Game of Ur</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Início</a></li>
+                <li><a href="/#sobre">Sobre</a></li>
+                <li><a href="/ranking" style="text-decoration: underline;">Ranking</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="ranking-container">
+            <h2 style="text-align: center; color: var(--cor-primaria);">🏆 Hall da Fama</h2>
+            <p style="text-align: center; color: #666;">Os melhores jogadores da Mesopotâmia Digital</p>
+
+            <table class="ranking-table">
+                <thead>
+                    <tr>
+                        <th style="text-align: center;">#</th>
+                        <th>Jogador</th>
+                        <th>Vitórias</th>
+                        <th>Partidas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% ranking.forEach((player, index) => { %>
+                        <tr class="rank-<%= index + 1 %>">
+                            <td class="rank-number">
+                                <% if(index === 0) { %> 🥇 <% } 
+                                   else if(index === 1) { %> 🥈 <% } 
+                                   else if(index === 2) { %> 🥉 <% } 
+                                   else { %> <%= index + 1 %> <% } %>
+                            </td>
+                            <td>
+                                <strong><%= player.username %></strong>
+                            </td>
+                            <td>
+                                <strong style="color: var(--cor-secundaria);"><%= player.matchesWon %></strong>
+                            </td>
+                            <td>
+                                <%= player.matchesPlayed %>
+                                <% 
+                                   let rate = 0;
+                                   if(player.matchesPlayed > 0) rate = Math.round((player.matchesWon / player.matchesPlayed) * 100);
+                                %>
+                                <span class="win-rate">(<%= rate %>%)</span>
+                            </td>
+                        </tr>
+                    <% }) %>
+                    
+                    <% if (ranking.length === 0) { %>
+                        <tr><td colspan="4" style="text-align: center;">Nenhum jogo registrado ainda.</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <p>UFSC - Sistemas de Informação - 2025</p>
+    </footer>
+
+</body>
+</html>

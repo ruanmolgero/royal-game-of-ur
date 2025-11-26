@@ -43,7 +43,12 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io();
+
+        const currentUser = "<%= user ? user.username : '' %>";
+
+        const socket = io({
+            query: { username: currentUser }
+        });
         const roomsBody = document.getElementById('rooms-body');
         const loading = document.getElementById('loading');
 

@@ -123,7 +123,7 @@
 }
 /* ========================================================================== 3. LAYOUT DA HOME (DASHBOARD) ========================================================================== */
  .container {
-     max-width: 1200px;
+     max-width: 1400px;
      margin: 40px auto;
      padding: 0 20px;
      width: 100%;
@@ -146,8 +146,8 @@
 /* Grid Superior */
  .layout-grid {
      display: grid;
-     grid-template-columns: 2.5fr 1fr;
-     gap: 30px;
+     grid-template-columns: 2fr 1fr 1fr;
+     gap: 20px;
      align-items: start;
 }
 /* Coluna Esquerda (Hero + Info) */
@@ -292,7 +292,7 @@
      color: #999;
      font-style: italic;
 }
- @media (max-width: 900px) {
+ @media (max-width: 1100px) {
      .layout-grid {
          grid-template-columns: 1fr;
     }
@@ -728,4 +728,46 @@
      white-space: nowrap;
      border: 1px solid #e74c3c;
      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================================================
+   NOVO: ESTILOS DO RANKING
+   ========================================================================== */
+.ranking-list {
+    padding: 0;
+}
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+}
+.ranking-item:last-child { border-bottom: none; }
+
+.rank-pos {
+    width: 25px;
+    font-weight: bold;
+    color: #999;
+}
+.rank-1 { color: #f39c12; font-size: 1.2rem; } /* Ouro */
+.rank-2 { color: #7f8c8d; font-weight: bold; } /* Prata */
+.rank-3 { color: #d35400; font-weight: bold; } /* Bronze */
+
+.rank-name {
+    flex: 1;
+    font-weight: 500;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rank-score {
+    font-weight: bold;
+    color: var(--cor-secundaria);
+    background: rgba(52, 152, 219, 0.1);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.85rem;
 }

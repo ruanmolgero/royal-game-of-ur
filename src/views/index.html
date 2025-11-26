@@ -39,12 +39,18 @@
         <div class="layout-grid">
             
             <main class="white-card main-content">
-                
                 <section id="game-selection" class="hero-section">
                     <h2>Pronto para o desafio milenar?</h2>
                     <p>Escolha seu modo de jogo:</p>
                     
                     <div class="menu-buttons">
+
+                        <% if (user && user.isAdmin) { %>
+                            <a href="/admin" class="btn-primary" style="background-color: #e74c3c;">
+                                Painel Admin
+                            </a>
+                        <% } %>
+
                         <a href="/game?mode=bot" class="btn-primary" style="background-color: #f39c12;">
                             Play vs Bot
                         </a>
@@ -74,7 +80,6 @@
 
                 <section id="regras">
                     <h3>Regras Básicas</h3>
-                    <!-- <p>O objetivo é percorrer o tabuleiro com suas 7 peças antes do adversário. Utilize os dados tetraédricos para mover. Cair na casa da Roseta concede um turno extra!</p> -->
                      <div class="rules-container">
                         <p>O objetivo é ser o primeiro a levar todas as suas <strong>7 peças</strong> do início ao fim do tabuleiro.</p>
                         
@@ -115,7 +120,6 @@
 
                 <section id="disciplina">
                     <h3>Disciplina</h3>
-                    <!-- <p>Desenvolvido para <strong>INE5646 - Programação para Web</strong> (UFSC).</p> -->
                      <p>
                         Este sistema foi desenvolvido como requisito avaliativo para a disciplina 
                         <strong>INE5646 - Programação para Web</strong> da Universidade Federal de Santa Catarina (UFSC).
@@ -138,6 +142,27 @@
                 </div>
             </aside>
 
+            <aside class="white-card sidebar-content">
+                <div class="panel-header" style="background-color: #f1c40f; color: #333;">
+                    <h3>🏆 Top 5</h3>
+                    <small>Ranked (PvP)</small> 
+                </div>
+                
+                <div class="ranking-list">
+                    <% if (ranking.length > 0) { %>
+                        <% ranking.forEach((player, index) => { %>
+                            <div class="ranking-item">
+                                <div class="rank-pos rank-<%= index + 1 %>"><%= index + 1 %></div>
+                                <div class="rank-name"><%= player.username %></div>
+                                <div class="rank-score"><%= player.matchesWon %></div>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <p style="text-align:center; padding:15px; color:#999; font-size:0.9rem;">Sem dados ainda.</p>
+                    <% } %>
+                </div>
+            </aside>
+
         </div>
     </div>
 
@@ -147,7 +172,14 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io();
+        const currentUser = "<%= user ? user.username : '' %>";
+
+        const socket = io({
+            query: {
+                username: currentUser
+            }
+        });
+
         const liveList = document.getElementById('live-list');
         const userLoggedIn = "<%= user ? 'true' : 'false' %>" === 'true';
 

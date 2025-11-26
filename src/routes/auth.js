@@ -28,6 +28,7 @@ router.post('/register', async (req, res) => {
 
         req.session.userId = newUser._id;
         req.session.username = newUser.username;
+        req.session.isAdmin = user.isAdmin;
         
         res.redirect('/');
     } catch (err) {
@@ -57,6 +58,7 @@ router.post('/login', async (req, res) => {
         console.log('Login Sucesso! Sessão iniciada para:', user.username);
         req.session.userId = user._id;
         req.session.username = user.username;
+        req.session.isAdmin = user.isAdmin;
 
         res.redirect('/');
     } catch (err) {

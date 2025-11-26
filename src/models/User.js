@@ -23,6 +23,9 @@ const UserSchema = new mongoose.Schema({
     // Estatísticas
     matchesPlayed: { type: Number, default: 0 },
     matchesWon: { type: Number, default: 0 },
+
+    botMatchesPlayed: { type: Number, default: 0 },
+    botWins: { type: Number, default: 0 },
     
     // Configurações
     preferences: {
