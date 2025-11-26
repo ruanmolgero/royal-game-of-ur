@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regras - Royal Game of Ur</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* CSS Específico para a página de Regras */
+        .rules-content { max-width: 800px; margin: 0 auto; }
+        
+        .rule-block {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .rule-block:last-child { border-bottom: none; }
+
+        .rule-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .rule-number {
+            background-color: var(--cor-secundaria);
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            flex-shrink: 0;
+        }
+
+        .rule-title { color: var(--cor-primaria); margin: 0; font-size: 1.4rem; }
+        
+        /* Estilo para a imagem das regras */
+        .rule-image {
+            width: 100%;
+            max-width: 600px; /* Limita largura para não estourar */
+            height: auto;
+            display: block;
+            margin: 20px auto; /* Centraliza */
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border: 1px solid #eee;
+        }
+
+        .placeholder-img {
+            width: 100%;
+            height: 150px;
+            background-color: #f0f2f5;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            display: flex; justify-content: center; align-items: center;
+            color: #999; font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .highlight-box {
+            background-color: #fdf6e3;
+            border-left: 5px solid var(--cor-amarelo);
+            padding: 15px;
+            margin: 15px 0;
+            color: #555;
+            border-radius: 0 5px 5px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="user-actions">
+            <% if (user) { %>
+                <div class="logged-in-menu">
+                    <a href="/profile" class="user-link">
+                        <span class="user-avatar-small">👤</span> 
+                        Olá, <strong><%= user.username %></strong>
+                    </a>
+                    <a href="/auth/logout" class="btn-logout-small">Sair</a>
+                </div>
+            <% } else { %>
+                <a href="/login" class="btn-login-header">Entrar</a>
+            <% } %>
+        </div>
+
+        <h1>The Royal Game of Ur</h1>
+        
+        <nav>
+            <ul>
+                <li><a href="/">Início</a></li>
+                <li><a href="/rules" style="text-decoration: underline; color: var(--cor-secundaria);">Regras</a></li>
+                <li><a href="/ranking">Ranking</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main class="white-card">
+            <div class="rules-content">
+                
+                <div style="text-align: center; margin-bottom: 40px;">
+                    <h1 style="color: var(--cor-primaria); margin-bottom: 10px;">Como Jogar</h1>
+                    <p style="font-size: 1.1rem; color: #666;">
+                        O objetivo é simples: seja o primeiro a levar suas <strong>7 peças</strong> do início ao fim do tabuleiro. <br>
+                        Mas cuidado: o caminho é cheio de perigos!
+                    </p>
+                    <hr class="divider">
+                </div>
+
+                <div class="rule-block">
+                    <div class="rule-header">
+                        <div class="rule-number">1</div>
+                        <h2 class="rule-title">O Caminho e as Zonas</h2>
+                    </div>
+                    <p>Cada jogador começa em sua própria zona segura, cruza a "Zona de Guerra" central (onde as peças se encontram) e termina em sua zona segura de saída.</p>
+                    
+                    <img src="/assets/rules-path.png" alt="Diagrama do Caminho" class="rule-image">
+                    
+                    <p style="font-size: 0.9rem; color: #777; text-align: center;">
+                        <em>A linha laranja representa o Jogador 1 e a linha azul o Jogador 2.</em>
+                    </p>
+                </div>
+
+                <div class="rule-block">
+                    <div class="rule-header">
+                        <div class="rule-number">2</div>
+                        <h2 class="rule-title">Os Dados Tetraédricos</h2>
+                    </div>
+                    <p>O jogo usa 4 dados especiais em forma de pirâmide. Cada dado tem 2 pontas marcadas.</p>
+                    <ul style="background: #f9f9f9; padding: 15px; border-radius: 5px; list-style: none;">
+                        <li> <strong>Resultado:</strong> A soma das pontas marcadas (0 a 4).</li>
+                        <li> <strong>Probabilidade:</strong> Tirar "2" é o mais comum. Tirar "0" ou "4" é muito raro!</li>
+                    </ul>
+                </div>
+
+                <div class="rule-block">
+                    <div class="rule-header">
+                        <div class="rule-number">3</div>
+                        <h2 class="rule-title">Captura (A Guerra)</h2>
+                    </div>
+                    <p>Se você cair em uma casa ocupada por uma peça inimiga na linha central, a peça dele é <strong>capturada</strong>!</p>
+                    
+                    <div class="highlight-box">
+                        <strong>Consequência:</strong> A peça capturada é removida do tabuleiro e volta para o início (estoque), precisando percorrer todo o caminho novamente.
+                    </div>
+                </div>
+
+                <div class="rule-block">
+                    <div class="rule-header">
+                        <div class="rule-number">4</div>
+                        <h2 class="rule-title">A Roseta (🌸)</h2>
+                    </div>
+                    <p>As casas marcadas com uma flor são especiais e estratégicas. Elas oferecem dois benefícios poderosos:</p>
+                    <ul>
+                        <li> <strong>Turno Extra:</strong> Caiu na Roseta? Jogue os dados de novo imediatamente!</li>
+                        <li> <strong>Imunidade:</strong> Uma peça na Roseta da Linha Central está segura e <strong>não pode ser capturada</strong>.</li>
+                    </ul>
+                </div>
+
+                <div class="rule-block">
+                    <div class="rule-header">
+                        <div class="rule-number">5</div>
+                        <h2 class="rule-title">Vencendo o Jogo</h2>
+                    </div>
+                    <p>Para tirar uma peça do tabuleiro (e marcar um ponto), você precisa de um resultado <strong>exato</strong> nos dados para sair da última casa.</p>
+                    <p>O primeiro jogador a retirar todas as suas <strong>7 peças</strong> vence a partida!</p>
+                </div>
+
+                <div style="text-align: center; margin-top: 50px;">
+                    <h3 style="margin-bottom: 20px;">Pronto para o desafio?</h3>
+                    <div class="menu-buttons">
+                        <a href="/game?mode=bot" class="btn-primary" style="background-color: #f39c12;">Treinar com Bot</a>
+                        <a href="/lobby" class="btn-primary">Jogar Online</a>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>UFSC - Sistemas de Informação - 2025</p>
+    </footer>
+
+</body>
+</html>

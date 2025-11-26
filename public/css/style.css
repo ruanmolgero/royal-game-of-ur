@@ -775,3 +775,73 @@
     border-radius: 10px;
     font-size: 0.85rem;
 }
+
+/* ==========================================================================
+   13. SELEÇÃO DE AVATAR (PERFIL)
+   ========================================================================== */
+.avatar-grid {
+    display: flex;
+    gap: 10px; /* Espaço entre bolinhas */
+    flex-wrap: wrap;
+    justify-content: center; /* Centraliza na linha */
+    margin: 20px 0;
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    
+    /* ADIÇÃO: Scrollbar */
+    max-height: 250px; /* Altura fixa (aprox 3 linhas visíveis) */
+    overflow-y: auto;  /* Barra de rolagem vertical */
+    
+    /* Estilização da barra de rolagem (opcional, mas fica bonito) */
+    scrollbar-width: thin;
+    scrollbar-color: var(--cor-secundaria) #eee;
+}
+
+/* Webkit Scrollbar (Chrome/Edge/Safari) */
+.avatar-grid::-webkit-scrollbar { width: 8px; }
+.avatar-grid::-webkit-scrollbar-track { background: #eee; }
+.avatar-grid::-webkit-scrollbar-thumb { background-color: var(--cor-secundaria); border-radius: 4px; }
+
+.avatar-option {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: all 0.2s ease;
+    background-color: white;
+    flex-shrink: 0; /* Impede que elas esmaguem */
+}
+
+.avatar-option:hover {
+    transform: scale(1.1);
+    border-color: #ccc;
+}
+
+/* Quando selecionado via JS */
+.avatar-option.selected {
+    border-color: var(--cor-secundaria);
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+    transform: scale(1.1);
+}
+
+.avatar-preview-large {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 4px solid var(--cor-primaria);
+    background-color: white;
+    object-fit: cover;
+}
+
+.rank-avatar-img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+    background-color: #eee;
+    border: 1px solid #ddd;
+    object-fit: cover;
+}

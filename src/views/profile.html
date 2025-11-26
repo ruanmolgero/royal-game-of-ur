@@ -4,74 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Perfil</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
     <style>
-        /* Reutiliza seus estilos de formulário e container */
-        body.profile-page {
-            background-color: #ecf0f1;
-            padding: 20px;
-        }
-        .profile-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        .full-width { grid-column: span 2; }
-        
-        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        
+        /* Estilos inline específicos para layout do perfil */
+        body.profile-page { background-color: #ecf0f1; padding: 20px; }
+        .profile-container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .header-profile { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; }
-        .avatar-preview { width: 80px; height: 80px; border-radius: 50%; background: #ddd; border: 2px solid #333; }
+        .btn-save { background: #27ae60; color: white; border: none; padding: 12px 20px; cursor: pointer; border-radius: 5px; font-size: 1rem; width: 100%; font-weight: bold; }
+        .btn-logout { background: #c0392b; color: white; text-decoration: none; padding: 8px 15px; border-radius: 5px; font-size: 0.9rem; margin-left: auto; height: fit-content; }
         
-        .btn-save { background: #27ae60; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; font-size: 1rem; }
-        .btn-logout { background: #c0392b; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px; float: right;}
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .full-width { grid-column: span 2; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
     </style>
 </head>
 <body class="profile-page">
 
-    <nav style="margin-bottom: 20px;">
+    <nav style="margin-bottom: 20px; max-width: 600px; margin: 0 auto 20px auto;">
         <a href="/" style="font-weight: bold; color: #2c3e50;">&larr; Voltar ao Menu</a>
     </nav>
 
     <div class="profile-container">
         <div class="header-profile">
-            <div class="avatar-preview"></div>
-            <div>
-                <h1><%= user.username %></h1>
-
+            <img src="<%= user.avatar || 'https://api.dicebear.com/7.x/bottts/svg?seed=1' %>" class="avatar-preview-large" id="main-avatar-preview">
+            
+            <div style="flex: 1;">
+                <h1 style="margin: 0; font-size: 1.8rem;"><%= user.username %></h1>
+                
                 <% 
                     const pvpRate = user.matchesPlayed > 0 ? Math.round((user.matchesWon / user.matchesPlayed) * 100) : 0;
                     const botRate = user.botMatchesPlayed > 0 ? Math.round((user.botWins / user.botMatchesPlayed) * 100) : 0;
                 %>
-
-                <div style="margin-top: 10px; line-height: 1.8;">
-                    <div>
-                        <strong>⚔️ Ranked (PvP):</strong> 
-                        <%= user.matchesWon %> / <%= user.matchesPlayed %> 
-                        <span style="color: #7f8c8d; font-size: 0.9em;">(<%= pvpRate %>%)</span>
-                    </div>
-                    <div>
-                        <strong>🤖 Treino (Bot):</strong> 
-                        <%= user.botWins %> / <%= user.botMatchesPlayed %> 
-                        <span style="color: #7f8c8d; font-size: 0.9em;">(<%= botRate %>%)</span>
-                    </div>
+                <div style="margin-top: 10px; font-size: 0.9rem; color: #555;">
+                    <div>⚔️ <strong>PvP:</strong> <%= user.matchesWon %> vitórias (<%= pvpRate %>%)</div>
+                    <div>🤖 <strong>Bot:</strong> <%= user.botWins %> vitórias (<%= botRate %>%)</div>
                 </div>
             </div>
+            
             <a href="/auth/logout" class="btn-logout">Sair</a>
         </div>
 
-        <hr>
+        <hr style="border:0; border-top:1px solid #eee; margin: 20px 0;">
 
         <form action="/auth/update" method="POST">
+            
+            <div class="form-group">
+                <label>Escolha seu Avatar:</label>
+                <div class="avatar-grid" id="avatar-grid">
+                    </div>
+                
+                <label style="font-size: 0.8rem; color: #777;">Ou cole uma URL personalizada:</label>
+                <input type="text" name="avatar" id="avatarInput" value="<%= user.avatar %>" placeholder="https://...">
+            </div>
+
             <div class="form-grid">
                 <div class="form-group">
                     <label>Idade</label>
@@ -89,15 +75,97 @@
                     <label>País</label>
                     <input type="text" name="country" value="<%= user.location.country %>">
                 </div>
-                <div class="form-group full-width">
-                    <label>URL do Avatar (Imagem)</label>
-                    <input type="text" name="avatar" value="<%= user.avatar %>" placeholder="https://...">
-                </div>
             </div>
+            
             <br>
             <button type="submit" class="btn-save">Salvar Alterações</button>
         </form>
     </div>
+
+    <script>
+        const defaultAvatars = [
+            // LINHA 1: ROBÔS (Bottts)
+            'https://api.dicebear.com/9.x/bottts/svg?seed=Ruan',
+            'https://api.dicebear.com/9.x/bottts/svg?seed=Cyborg',
+            'https://api.dicebear.com/9.x/bottts/svg?seed=Zoe',
+            'https://api.dicebear.com/9.x/bottts/svg?seed=Max',
+            'https://api.dicebear.com/9.x/bottts/svg?seed=Delta',
+            'https://api.dicebear.com/9.x/bottts/svg?seed=Omega',
+            'https://api.dicebear.com/9.x/bottts/svg?seed=Emery',
+
+            // LINHA 2: AVENTUREIROS (Adventurer)
+            'https://api.dicebear.com/9.x/adventurer/svg?seed=Alexander',
+            'https://api.dicebear.com/9.x/adventurer/svg?seed=Lilith',
+            'https://api.dicebear.com/9.x/adventurer/svg?seed=Cookie',
+            'https://api.dicebear.com/9.x/adventurer/svg?seed=Midnight',
+            'https://api.dicebear.com/9.x/adventurer/svg?seed=Willow',
+            'https://api.dicebear.com/9.x/adventurer/svg?seed=Jasper',
+            'https://api.dicebear.com/9.x/adventurer/svg?seed=Mason',
+
+            // LINHA 3: PIXEL ART (Gamer/Retro)
+            'https://api.dicebear.com/9.x/pixel-art/svg?seed=Mario',
+            'https://api.dicebear.com/9.x/pixel-art/svg?seed=Link',
+            'https://api.dicebear.com/9.x/pixel-art/svg?seed=Zelda',
+            'https://api.dicebear.com/9.x/pixel-art/svg?seed=Pacman',
+            'https://api.dicebear.com/9.x/pixel-art/svg?seed=Steve',
+            'https://api.dicebear.com/9.x/pixel-art/svg?seed=Alex',
+            'https://api.dicebear.com/9.x/pixel-art/svg?seed=Omega',
+
+            // LINHA 4: HUMANOS (Avataaars)
+            'https://api.dicebear.com/9.x/avataaars/svg?seed=Felix',
+            'https://api.dicebear.com/9.x/avataaars/svg?seed=Aneka',
+            'https://api.dicebear.com/9.x/avataaars/svg?seed=Jack',
+            'https://api.dicebear.com/9.x/avataaars/svg?seed=Precious',
+            'https://api.dicebear.com/9.x/avataaars/svg?seed=Oliver',
+            'https://api.dicebear.com/9.x/avataaars/svg?seed=Sophia',
+            'https://api.dicebear.com/9.x/avataaars/svg?seed=Omega',
+
+            // LINHA 5: MONSTROS (Fun Emoji)
+            'https://api.dicebear.com/9.x/big-smile/svg?seed=Mouth',
+            'https://api.dicebear.com/9.x/big-smile/svg?seed=Happy',
+            'https://api.dicebear.com/9.x/big-smile/svg?seed=Cute',
+            'https://api.dicebear.com/9.x/big-smile/svg?seed=Love',
+            'https://api.dicebear.com/9.x/big-smile/svg?seed=Silly',
+            'https://api.dicebear.com/9.x/big-smile/svg?seed=Wink',
+            'https://api.dicebear.com/9.x/big-smile/svg?seed=Omega'
+        ];
+
+        const grid = document.getElementById('avatar-grid');
+        const input = document.getElementById('avatarInput');
+        const preview = document.getElementById('main-avatar-preview');
+
+        // Função para atualizar visual
+        function updateSelection(url) {
+            input.value = url;
+            preview.src = url;
+            
+            // Atualiza classe .selected
+            document.querySelectorAll('.avatar-option').forEach(img => {
+                if(img.src === url) img.classList.add('selected');
+                else img.classList.remove('selected');
+            });
+        }
+
+        // Gera a Grid
+        defaultAvatars.forEach(url => {
+            const img = document.createElement('img');
+            img.src = url;
+            img.className = 'avatar-option';
+            
+            // Se for o avatar atual do user, marca como selecionado
+            if (input.value === url) img.classList.add('selected');
+
+            img.onclick = () => updateSelection(url);
+            grid.appendChild(img);
+        });
+
+        // Se o usuário digitar na caixa de texto, atualiza o preview
+        input.addEventListener('input', (e) => {
+            preview.src = e.target.value;
+            // Remove seleção da grid pois é customizado
+            document.querySelectorAll('.avatar-option').forEach(img => img.classList.remove('selected'));
+        });
+    </script>
 
 </body>
 </html>

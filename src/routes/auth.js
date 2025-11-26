@@ -22,11 +22,12 @@ router.post('/register', async (req, res) => {
             return res.send('<script>alert("Usuário já existe!"); window.location.href="/login";</script>');
         }
 
+        const defaultAvatar = `https://api.dicebear.com/9.x/bottts/svg?seed=${username}`;
         // Criptografa a senha (Hash)
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Salva no Banco
-        const newUser = new User({ username, password: hashedPassword });
+        const newUser = new User({ username, password: hashedPassword, avatar: defaultAvatar});
         await newUser.save();
 
         console.log('Usuário criado com sucesso (ID):', newUser._id);

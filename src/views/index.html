@@ -29,7 +29,7 @@
             <ul>
                 <li><a href="#game-selection">Jogar</a></li>
                 <li><a href="#sobre">Sobre</a></li>
-                <li><a href="#regras">Regras</a></li>
+                <li><a href="/rules">Regras</a></li>
                 <li><a href="#disciplina">Disciplina</a></li>
             </ul>
         </nav>
@@ -78,7 +78,7 @@
                     </p>
                 </section>
 
-                <section id="regras">
+                <!-- <section id="regras">
                     <h3>Regras Básicas</h3>
                      <div class="rules-container">
                         <p>O objetivo é ser o primeiro a levar todas as suas <strong>7 peças</strong> do início ao fim do tabuleiro.</p>
@@ -116,7 +116,7 @@
                         <h3>5. Vencendo</h3>
                         <p>Para tirar uma peça do tabuleiro, você precisa de um lançamento de dados exato para "sair" (como se fosse a casa 15). O primeiro a retirar as 7 peças vence.</p>
                     </div>
-                </section>
+                </section> -->
 
                 <section id="disciplina">
                     <h3>Disciplina</h3>
@@ -153,6 +153,7 @@
                         <% ranking.forEach((player, index) => { %>
                             <div class="ranking-item">
                                 <div class="rank-pos rank-<%= index + 1 %>"><%= index + 1 %></div>
+                                <img src="<%= player.avatar || 'https://api.dicebear.com/9.x/bottts/svg?seed=default' %>" class="rank-avatar-img" alt="Avatar">
                                 <div class="rank-name"><%= player.username %></div>
                                 <div class="rank-score"><%= player.matchesWon %></div>
                             </div>

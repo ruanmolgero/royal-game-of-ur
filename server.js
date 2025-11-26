@@ -43,7 +43,7 @@ app.get('/', async (req, res) => {
     }
 
     // Busca Top 5 para o Widget
-    const topRanking = await User.find({ isAdmin: { $ne: true } }, 'username matchesWon')
+    const topRanking = await User.find({ isAdmin: { $ne: true } }, 'username matchesWon avatar')
                                  .sort({ matchesWon: -1 })
                                  .limit(5);
 
@@ -83,6 +83,15 @@ app.get('/ranking', async (req, res) => {
     } catch (err) {
         res.redirect('/');
     }
+});
+
+// ROTA REGRAS (Adicione isto!)
+app.get('/rules', async (req, res) => {
+    let user = null;
+    if (req.session.userId) {
+        user = await User.findById(req.session.userId);
+    }
+    res.render('rules.html', { user });
 });
 
 // ROTA DO JOGO
@@ -139,13 +148,13 @@ function getPublicRooms() {
         });
 }
 
-// Auxiliar: Salvar Fim de Jogo
+// Auxiliar: Salvar Fim de Jogo (VERSÃO CORRIGIDA)
 async function handleGameEnd(roomId, gameState, roomData) {
     if (!gameState.winner) return;
     
-    // PEGA OS NOMES QUE SALVAMOS NO INÍCIO (MUITO MAIS SEGURO)
-    const p1Name = roomData.p1Name || "Jogador 1";
-    const p2Name = roomData.p2Name || (roomData.type === 'bot' ? "Robô" : "Jogador 2");
+    // USA OS NOMES FIXOS DA SALA (Correção do Bug do J1)
+    let p1Name = roomData.p1Name || "Jogador 1";
+    let p2Name = roomData.p2Name || (roomData.type === 'bot' ? "Robô" : "Jogador 2");
 
     console.log(`🏆 Jogo ${roomId} acabou! Vencedor: ${gameState.winner} (${gameState.winner === 1 ? p1Name : p2Name})`);
 
@@ -162,7 +171,7 @@ async function handleGameEnd(roomId, gameState, roomData) {
 
         const isBotGame = (roomData.type === 'bot');
 
-        // ATUALIZA JOGADOR 1
+        // ATUALIZA JOGADOR 1 (Ruan)
         if (p1Name !== 'Visitante' && !p1Name.startsWith('Visitante')) {
             const update = { $inc: {} };
             if (isBotGame) {
@@ -175,7 +184,7 @@ async function handleGameEnd(roomId, gameState, roomData) {
             await User.findOneAndUpdate({ username: p1Name }, update);
         }
 
-        // ATUALIZA JOGADOR 2
+        // ATUALIZA JOGADOR 2 (Luiz)
         if (p2Name !== 'Visitante' && !p2Name.startsWith('Visitante') && !isBotGame) {
              const update = { $inc: { matchesPlayed: 1 } };
              if (gameState.winner === 2) update.$inc.matchesWon = 1;
