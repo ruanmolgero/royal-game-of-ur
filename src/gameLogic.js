@@ -22,50 +22,40 @@ class RoyalGameOfUr {
         this.resetGame();
     }
 
-    // resetGame() {
-    //     this.state = {
-    //         currentPlayer: 1,
-    //         diceResult: 0,
-    //         // -1 = fora, 0..13 = no tabuleiro, 14 = finalizado
-    //         player1: { pieces: Array(this.NUM_PIECES).fill(-1), completed: 0 },
-    //         player2: { pieces: Array(this.NUM_PIECES).fill(-1), completed: 0 },
-    //         board: {}, // Mapeamento { cellId: { player: 1, pieceIndex: 0 } }
-    //         phase: 'roll', // 'roll' ou 'move'
-    //         winner: null,
-    //         lastAction: 'Jogo iniciado',
-    //         validMoves: [],
-    //         moveDiagnostics: {}
-    //     };
-    //     this.updateBoardMap();
-    // }
-
     resetGame() {
-        // --- MODO DEBUG / TESTE RÁPIDO ---        
-        const debugPieces = [13, -2, -2, -2, -2, -2, -2]; // 13 = Última casa, -2 = Já saiu
-        
         this.state = {
             currentPlayer: 1,
             diceResult: 0,
-            
-            player1: { 
-                pieces: [...debugPieces], 
-                completed: 6 
-            },
-            
-            player2: { 
-                pieces: [...debugPieces], 
-                completed: 6 
-            },
-            
-            board: {}, 
-            phase: 'roll', 
+            // -1 = fora, 0..13 = no tabuleiro, 14 = finalizado
+            player1: { pieces: Array(this.NUM_PIECES).fill(-1), completed: 0 },
+            player2: { pieces: Array(this.NUM_PIECES).fill(-1), completed: 0 },
+            board: {}, // Mapeamento { cellId: { player: 1, pieceIndex: 0 } }
+            phase: 'roll', // 'roll' ou 'move'
             winner: null,
-            lastAction: 'MODO DEBUG ATIVADO',
+            lastAction: 'Jogo iniciado',
             validMoves: [],
             moveDiagnostics: {}
         };
         this.updateBoardMap();
     }
+
+    // resetGame() {
+    //     // --- MODO DEBUG / TESTE RÁPIDO ---        
+    //     const debugPieces = [13, -2, -2, -2, -2, -2, -2]; // 13 = Última casa, -2 = Já saiu
+    //     this.state = { 
+    //         currentPlayer: 1,
+    //         diceResult: 0,
+    //         player1: { pieces: [...debugPieces], completed: 6 },
+    //         player2: { pieces: [...debugPieces], completed: 6 },
+    //         board: {}, 
+    //         phase: 'roll', 
+    //         winner: null,
+    //         lastAction: 'MODO DEBUG ATIVADO',
+    //         validMoves: [],
+    //         moveDiagnostics: {}
+    //     };
+    //     this.updateBoardMap();
+    // }
 
     // Reconstrói o mapa do tabuleiro baseado nas posições das peças
     updateBoardMap() {

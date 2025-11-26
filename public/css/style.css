@@ -316,9 +316,10 @@
      background-color: var(--cor-fundo-light);
      display: flex;
      flex-direction: column;
-     height: 100vh;
-     overflow: hidden;
-     transition: background-color 0.3s ease;
+     min-height: 100vh; 
+    height: auto;
+    overflow-y: auto;
+    transition: background-color 0.3s ease;
 }
  .game-header {
      display: flex;
@@ -328,6 +329,7 @@
      background-color: var(--cor-primaria);
      color: white;
      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+     flex-shrink: 0;
 }
  .btn-exit {
      border: 1px solid rgba(255, 255, 255, 0.3);
@@ -346,12 +348,14 @@
      flex: 1;
      display: flex;
      justify-content: center;
-     align-items: center;
+     align-items: flex-start;
      padding: 20px;
 }
  #game {
-     text-align: center;
-     color: var(--cor-texto);
+    margin: auto; 
+    text-align: center;
+    color: var(--cor-texto);
+    padding-bottom: 50px;
 }
  #game-board {
      display: grid;

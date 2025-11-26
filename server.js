@@ -39,7 +39,7 @@ app.get('/', async (req, res) => {
     }
 
     // Busca Top 5 para o Widget
-    const topRanking = await User.find({}, 'username matchesWon')
+    const topRanking = await User.find({ isAdmin: { $ne: true } }, 'username matchesWon')
                                  .sort({ matchesWon: -1 })
                                  .limit(5);
 
@@ -66,7 +66,7 @@ app.get('/lobby', async (req, res) => {
 // ROTA RANKING COMPLETO
 app.get('/ranking', async (req, res) => {
     try {
-        const topPlayers = await User.find({}, 'username matchesWon matchesPlayed')
+        const topPlayers = await User.find({ isAdmin: { $ne: true } }, 'username matchesWon matchesPlayed')
                                      .sort({ matchesWon: -1 })
                                      .limit(20); // Top 20 na página dedicada
 
