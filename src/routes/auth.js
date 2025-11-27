@@ -50,7 +50,7 @@ router.post('/login', async (req, res) => {
     console.log('Tentativa de Login para:', req.body.username);
 
     try {
-        const { username, password } = req.body;
+        const { username, password, postLoginAction } = req.body;
 
         // Busca usuário
         const user = await User.findOne({ username });
@@ -72,6 +72,11 @@ router.post('/login', async (req, res) => {
         req.session.userId = user._id;
         req.session.username = user.username;
         req.session.isAdmin = user.isAdmin;
+
+        if (postLoginAction === 'create') {
+            // Manda para a home com um gatilho
+            return res.redirect('/?trigger=create');
+        }
 
         res.redirect('/');
     } catch (err) {

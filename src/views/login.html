@@ -50,6 +50,7 @@
             <p class="error-msg" id="login-error"></p>
             
             <form action="/auth/login" method="POST">
+                <input type="hidden" name="postLoginAction" id="postLoginAction" value="">
                 <div class="form-group">
                     <label>Usuário</label>
                     <input type="text" name="username" required>
@@ -82,6 +83,18 @@
     </div>
 
     <script>
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const action = urlParams.get('action');
+
+        if (action) {
+            // Se tiver, coloca no input escondido para enviar pro servidor
+            document.getElementById('postLoginAction').value = action;
+
+            // Opcional: Muda o título para ficar mais amigável
+            document.querySelector('h2').innerText = "Login para Jogar";
+        }
+
         function toggleForms() {
             const login = document.getElementById('login-form');
             const register = document.getElementById('register-form');

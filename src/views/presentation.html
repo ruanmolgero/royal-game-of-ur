@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apresentação - Royal Game of Ur</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/vs.min.css">
+
+    <style>
+        /* Pequenos ajustes para o tema branco ficar perfeito */
+        .reveal section img { background: none; border: none; box-shadow: none; }
+        .reveal h1, .reveal h2, .reveal h3, .reveal h4 { color: #2c3e50; } /* Azul escuro do nosso projeto */
+        .box-container { display: flex; justify-content: space-around; margin-top: 30px; }
+        .box { 
+            background: #f0f2f5; 
+            padding: 20px; 
+            border-radius: 10px; 
+            border: 1px solid #ccc; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            flex: 1;
+            margin: 0 10px;
+        }
+        .fragment.visible { color: #2c3e50; }
+        code { font-size: 1.2rem; line-height: 1.4; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <section>
+                <h1 style="color: #2980b9;">The Royal Game of Ur</h1>
+                <h3>Recriação Multiplayer com Node.js</h3>
+                <p style="margin-top: 50px;">
+                    <small>Por: <strong>Ruan Luiz Molgero Lopes</strong></small>
+                </p>
+                <p><small>INE5646 - Programação para Web (UFSC)</small></p>
+            </section>
+
+            <section>
+                <h2>O Objetivo</h2>
+                <p>Trazer o jogo de tabuleiro de 2600 a.C. para a web moderna.</p>
+                <div style="text-align: left; margin-top: 40px; font-size: 0.9em;">
+                    <ul>
+                        <li class="fragment">🎲 <strong>Jogabilidade Fiel:</strong> Regras de Irving Finkel.</li>
+                        <li class="fragment">🌍 <strong>Multiplayer Real-time:</strong> Sem "refresh" na página.</li>
+                        <li class="fragment">🤖 <strong>Bot Inteligente:</strong> Para treino offline.</li>
+                        <li class="fragment">💾 <strong>Persistência:</strong> Histórico e Ranking no MongoDB.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section>
+                <h2>Arquitetura MVC</h2>
+                <p>O projeto segue estritamente a separação de responsabilidades:</p>
+                
+                <div class="box-container">
+                    <div class="box">
+                        <h4 style="color:#e74c3c">Model</h4>
+                        <small>Dados e Regras</small>
+                        <hr>
+                        <ul style="font-size: 0.6em; text-align: left;">
+                            <li>User.js (Mongo)</li>
+                            <li>Match.js (Mongo)</li>
+                            <li>GameLogic.js (Regras)</li>
+                        </ul>
+                    </div>
+                    <div class="box">
+                        <h4 style="color:#2980b9">View</h4>
+                        <small>Interface (EJS)</small>
+                        <hr>
+                        <ul style="font-size: 0.6em; text-align: left;">
+                            <li>index.html (Dashboard)</li>
+                            <li>game.html (Tabuleiro)</li>
+                            <li>profile.html (CRUD)</li>
+                        </ul>
+                    </div>
+                    <div class="box">
+                        <h4 style="color:#27ae60">Controller</h4>
+                        <small>Lógica e Rotas</small>
+                        <hr>
+                        <ul style="font-size: 0.6em; text-align: left;">
+                            <li>auth.js (Login)</li>
+                            <li>admin.js (Gestão)</li>
+                            <li>server.js (Socket)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>Stack Tecnológico</h2>
+                <ul style="font-size: 0.8em;">
+                    <li><strong>Back-End:</strong> Node.js + Express</li>
+                    <li><strong>Tempo Real:</strong> Socket.io (Event-driven)</li>
+                    <li><strong>Banco de Dados:</strong> MongoDB (NoSQL)</li>
+                    <li><strong>Front-End:</strong> HTML5 + CSS3 (Grid Layout)</li>
+                    <li><strong>Segurança:</strong> Helmet (Headers) + Bcrypt (Hash)</li>
+                    <li><strong>Deploy:</strong> PM2 + Apache Reverse Proxy (VPS)</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3>Sincronização de Estado</h3>
+                <p style="font-size: 0.7em;">O servidor é a "Fonte da Verdade". O cliente apenas desenha.</p>
+                <pre><code class="hljs javascript" data-trim data-line-numbers>
+// server.js (Simplificado)
+socket.on('move-piece', (index) => {
+    // 1. Servidor valida o movimento
+    const newState = game.movePiece(index);
+    
+    // 2. Se válido, avisa TODOS na sala
+    if (newState) {
+        io.to(roomId).emit('update-state', newState);
+        
+        // 3. Verifica vitória
+        if (newState.winner) handleGameEnd(roomId);
+    }
+});
+                </code></pre>
+            </section>
+
+            <section>
+                <h2>Resultados Obtidos</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 0.7em;">
+                    <div class="box">
+                        <h4>Lobby Ao Vivo</h4>
+                        <p>Criação dinâmica de salas e lista de espectadores em tempo real.</p>
+                    </div>
+                    <div class="box">
+                        <h4>Sistema de Ranking</h4>
+                        <p>Separação entre vitórias PvP (Ranked) e contra Bot (Treino).</p>
+                    </div>
+                    <div class="box">
+                        <h4>UX Responsiva</h4>
+                        <p>Layout Dashboard adaptável para Desktop e Mobile.</p>
+                    </div>
+                    <div class="box">
+                        <h4>Admin</h4>
+                        <p>Painel para gestão e banimento de usuários.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h1 style="color: #2980b9;">Demonstração</h1>
+                <p>O sistema está rodando 24/7 no VPS da UFSC.</p>
+                <br>
+                <a href="/" target="_blank" style="
+                    background: #2980b9; 
+                    color: white; 
+                    padding: 15px 30px; 
+                    text-decoration: none; 
+                    border-radius: 5px; 
+                    font-weight: bold;">
+                    Acessar Aplicação
+                </a>
+            </section>
+
+            <section>
+                <h2>Obrigado!</h2>
+                <p>Dúvidas?</p>
+                <small>Desenvolvido com ❤️ e muito Café.</small>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/highlight.min.js"></script>
+    <script>
+        Reveal.initialize({
+            controls: true,
+            progress: true,
+            center: true,
+            hash: true,
+            plugins: [ RevealHighlight ],
+            // Configuração para garantir contraste no tema branco
+            slideNumber: true
+        });
+    </script>
+</body>
+</html>

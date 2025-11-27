@@ -57,7 +57,7 @@
                         <% if (user) { %>
                             <button id="btn-create-room" class="btn-primary">Criar Sala</button>
                         <% } else { %>
-                            <a href="/login" class="btn-primary">Faça login p/ Criar Sala</a>
+                            <a href="/login?action=create" class="btn-primary">Faça login p/ Criar Sala</a>
                         <% } %>
                     </div>
                 </section>
@@ -185,6 +185,14 @@
         const userLoggedIn = "<%= user ? 'true' : 'false' %>" === 'true';
 
         const btnCreate = document.getElementById('btn-create-room');
+
+        function triggerCreateRoom() {
+            const name = prompt("Nome da sala:");
+            if(name && name.trim() !== "") {
+                socket.emit('create-room', name);
+            }
+        }
+
         if(btnCreate) {
             btnCreate.addEventListener('click', () => {
                 const name = prompt("Nome da sala:");

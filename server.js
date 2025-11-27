@@ -109,6 +109,12 @@ app.get('/game', async (req, res) => {
     res.redirect('/login');
 });
 
+// ROTA APRESENTAÇÃO (Reveal.js)
+app.get('/presentation', (req, res) => {
+    // Não precisa de user nem nada, é pública
+    res.render('presentation.html');
+});
+
 // --- BANCO DE DADOS ---
 mongoose.connect('mongodb://127.0.0.1/royal_ur_db')
     .then(() => console.log('📦 MongoDB Conectado!'))
@@ -339,22 +345,46 @@ io.on('connection', (socket) => {
     });
 
     // --- 5. DISCONNECT ---
-    socket.on('disconnect', () => {
+    socket.on('disconnecting', () => {
         const roomId = getSocketGameRoom(socket);
+        
         if (roomId) {
-            const uName = socket.data.username || 'Alguém';
-            io.to(roomId).emit('receive-chat', { msg: `${uName} saiu.`, senderName: "Sistema", username: "System" });
+            // Avisa quem ficou (se alguém ficou)
+            io.to(roomId).emit('receive-chat', { 
+                msg: "Alguém desconectou.", 
+                senderName: "Sistema", 
+                username: "System" 
+            });
             
             const roomData = games.get(roomId);
             if (roomData) {
                 const roomSize = io.sockets.adapter.rooms.get(roomId)?.size || 0;
-                if (roomData.type === 'bot' || roomSize === 0) {
+                
+                if (roomData.type === 'bot' || roomSize <= 1) {
                     games.delete(roomId);
+                    console.log(`Sala ${roomId} removida (Vazia).`);
                 }
             }
         }
+        
         io.emit('lobby-list', getPublicRooms());
     });
+    // socket.on('disconnect', () => {
+    //     const roomId = getSocketGameRoom(socket);
+    //     if (roomId) {
+    //         const uName = socket.data.username || 'Alguém';
+    //         io.to(roomId).emit('receive-chat', { msg: `${uName} saiu.`, senderName: "Sistema", username: "System" });
+            
+    //         const roomData = games.get(roomId);
+    //         if (roomData) {
+    //             const roomSize = io.sockets.adapter.rooms.get(roomId)?.size || 0;
+    //             if (roomData.type === 'bot' || roomSize === 0) {
+    //                 games.delete(roomId);
+    //             }
+    //         }
+    //     }
+    //     io.emit('lobby-list', getPublicRooms());
+    // });
 });
 
 // --- BOT LOGIC ---
