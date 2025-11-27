@@ -27,3 +27,7 @@ Versão multiplayer em tempo real do antigo jogo mesopotâmico, utilizando a reg
     node server.js
 
 5. Acesse http://localhost:3000
+
+## Apresentação
+
+Dentro de https://ine5646.ruan.molgero.vms.ufsc.br/presentation é possível encontrar a apresentação acerca do projeto
