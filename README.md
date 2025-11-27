@@ -15,7 +15,7 @@ Versão multiplayer em tempo real do antigo jogo mesopotâmico, utilizando a reg
 
 1. Clone o repositório:
    ```bash
-   git clone [SEU_LINK_GITHUB]
+   git clone https://github.com/ruanmolgero/royal-game-of-ur.git
 
 2. Instale as dependências:
     ```bash
