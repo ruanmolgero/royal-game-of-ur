@@ -3,17 +3,16 @@ class RoyalGameOfUr {
         this.NUM_PIECES = 7;
 
         this.BOARD_LAYOUT = [
-            'p1-4', 'c-1', 'p2-4',  // Linha 1 (Topo)
+            'p1-4', 'c-1', 'p2-4',  
             'p1-3', 'c-2', 'p2-3',
             'p1-2', 'c-3', 'p2-2',
             'p1-1', 'c-4', 'p2-1',
             null,   'c-5', null,
             null,   'c-6', null,
             'p1-6', 'c-7', 'p2-6',
-            'p1-5', 'c-8', 'p2-5'   // Linha 8 (Base)
+            'p1-5', 'c-8', 'p2-5'
         ];
         
-        // Caminhos atualizados para bater com os novos índices do array acima
         this.player1Path = [9, 6, 3, 0, 1, 4, 7, 10, 13, 16, 19, 22, 21, 18];
         this.player2Path = [11, 8, 5, 2, 1, 4, 7, 10, 13, 16, 19, 22, 23, 20];
         
@@ -29,7 +28,7 @@ class RoyalGameOfUr {
             // -1 = fora, 0..13 = no tabuleiro, 14 = finalizado
             player1: { pieces: Array(this.NUM_PIECES).fill(-1), completed: 0 },
             player2: { pieces: Array(this.NUM_PIECES).fill(-1), completed: 0 },
-            board: {}, // Mapeamento { cellId: { player: 1, pieceIndex: 0 } }
+            board: {}, 
             phase: 'roll', // 'roll' ou 'move'
             winner: null,
             lastAction: 'Jogo iniciado',
@@ -38,24 +37,6 @@ class RoyalGameOfUr {
         };
         this.updateBoardMap();
     }
-
-    // resetGame() {
-    //     // --- MODO DEBUG / TESTE RÁPIDO ---        
-    //     const debugPieces = [13, -2, -2, -2, -2, -2, -2]; // 13 = Última casa, -2 = Já saiu
-    //     this.state = { 
-    //         currentPlayer: 1,
-    //         diceResult: 0,
-    //         player1: { pieces: [...debugPieces], completed: 6 },
-    //         player2: { pieces: [...debugPieces], completed: 6 },
-    //         board: {}, 
-    //         phase: 'roll', 
-    //         winner: null,
-    //         lastAction: 'MODO DEBUG ATIVADO',
-    //         validMoves: [],
-    //         moveDiagnostics: {}
-    //     };
-    //     this.updateBoardMap();
-    // }
 
     // Reconstrói o mapa do tabuleiro baseado nas posições das peças
     updateBoardMap() {
@@ -100,7 +81,7 @@ class RoyalGameOfUr {
         const currentPos = pData.pieces[pieceIndex];
 
         // 1. Peça já finalizada
-        if (currentPos === -2) return null; // Não exibe erro, peça já saiu
+        if (currentPos === -2) return null; 
 
         const newPos = currentPos === -1 ? this.state.diceResult - 1 : currentPos + this.state.diceResult;
 
@@ -131,7 +112,7 @@ class RoyalGameOfUr {
         
         let total = 0;
         for (let i = 0; i < 4; i++) {
-            if (Math.random() > 0.5) { // 50% de chance
+            if (Math.random() > 0.5) {
                 total++;
             }
         }
@@ -171,7 +152,7 @@ class RoyalGameOfUr {
         const currentPos = pData.pieces[pieceIndex];
 
         // Peça já finalizada não move
-        if (currentPos === -2) return false; // -2 usaremos para "Finalizado/Safe"
+        if (currentPos === -2) return false; // -2 para "Finalizado/Safe"
 
         const newPos = currentPos === -1 ? this.state.diceResult - 1 : currentPos + this.state.diceResult;
 
@@ -271,7 +252,6 @@ class RoyalGameOfUr {
         if (validMoves.length === 0) return null;
 
         // Lógica Simples: Escolhe um movimento aleatório
-        // Futuro: Priorizar capturas ou rosetas aqui
         const randomIndex = Math.floor(Math.random() * validMoves.length);
         return validMoves[randomIndex];
     }

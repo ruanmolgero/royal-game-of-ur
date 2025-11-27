@@ -4,10 +4,10 @@ const path = require('path');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const authRoutes = require('./src/routes/auth');
-const adminRoutes = require('./src/routes/admin'); // Rota de Admin
+const adminRoutes = require('./src/routes/admin');
 const RoyalGameOfUr = require('./src/gameLogic');
 const User = require('./src/models/User');
-const Match = require('./src/models/Match'); // Model de Partidas
+const Match = require('./src/models/Match');
 
 const app = express();
 const http = require('http').createServer(app);
@@ -35,7 +35,7 @@ app.set('view engine', 'html');
 app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
 
-// ROTA HOME (Com Ranking e User)
+// ROTA HOME
 app.get('/', async (req, res) => {
     let user = null;
     if (req.session.userId) {
@@ -50,7 +50,7 @@ app.get('/', async (req, res) => {
     res.render('index.html', { user, ranking: topRanking });
 });
 
-// ROTA LOGIN (ESSA ESTAVA FALTANDO!)
+// ROTA LOGIN
 app.get('/login', (req, res) => res.render('login.html'));
 
 // ROTA PERFIL
@@ -67,7 +67,7 @@ app.get('/lobby', async (req, res) => {
     res.render('lobby.html', { user });
 });
 
-// ROTA RANKING COMPLETO
+// ROTA RANKING
 app.get('/ranking', async (req, res) => {
     try {
         const topPlayers = await User.find({ isAdmin: { $ne: true } }, 'username matchesWon matchesPlayed')
@@ -85,7 +85,7 @@ app.get('/ranking', async (req, res) => {
     }
 });
 
-// ROTA REGRAS (Adicione isto!)
+// ROTA REGRAS
 app.get('/rules', async (req, res) => {
     let user = null;
     if (req.session.userId) {
@@ -96,7 +96,6 @@ app.get('/rules', async (req, res) => {
 
 // ROTA DO JOGO
 app.get('/game', async (req, res) => {
-    // Entra se: Modo Bot OU Tem Sala (Espectador) OU Está Logado
     if (req.query.mode === 'bot' || req.query.room || req.session.userId) {
         
         let user = null;
@@ -109,16 +108,15 @@ app.get('/game', async (req, res) => {
     res.redirect('/login');
 });
 
-// ROTA APRESENTAÇÃO (Reveal.js)
+// ROTA APRESENTAÇÃO
 app.get('/presentation', (req, res) => {
-    // Não precisa de user nem nada, é pública
     res.render('presentation.html');
 });
 
 // --- BANCO DE DADOS ---
 mongoose.connect('mongodb://127.0.0.1/royal_ur_db')
-    .then(() => console.log('📦 MongoDB Conectado!'))
-    .catch(err => console.error('❌ Erro Mongo:', err));
+    .then(() => console.log(' MongoDB Conectado!'))
+    .catch(err => console.error(' Erro Mongo:', err));
 
 
 // ============================================================
@@ -158,11 +156,11 @@ function getPublicRooms() {
 async function handleGameEnd(roomId, gameState, roomData) {
     if (!gameState.winner) return;
     
-    // USA OS NOMES FIXOS DA SALA (Correção do Bug do J1)
+    // USA OS NOMES FIXOS DA SALA
     let p1Name = roomData.p1Name || "Jogador 1";
     let p2Name = roomData.p2Name || (roomData.type === 'bot' ? "Robô" : "Jogador 2");
 
-    console.log(`🏆 Jogo ${roomId} acabou! Vencedor: ${gameState.winner} (${gameState.winner === 1 ? p1Name : p2Name})`);
+    console.log(` Jogo ${roomId} acabou! Vencedor: ${gameState.winner} (${gameState.winner === 1 ? p1Name : p2Name})`);
 
     const winnerName = gameState.winner === 1 ? p1Name : p2Name;
 
@@ -177,7 +175,7 @@ async function handleGameEnd(roomId, gameState, roomData) {
 
         const isBotGame = (roomData.type === 'bot');
 
-        // ATUALIZA JOGADOR 1 (Ruan)
+        // ATUALIZA JOGADOR 1
         if (p1Name !== 'Visitante' && !p1Name.startsWith('Visitante')) {
             const update = { $inc: {} };
             if (isBotGame) {
@@ -190,7 +188,7 @@ async function handleGameEnd(roomId, gameState, roomData) {
             await User.findOneAndUpdate({ username: p1Name }, update);
         }
 
-        // ATUALIZA JOGADOR 2 (Luiz)
+        // ATUALIZA JOGADOR 2
         if (p2Name !== 'Visitante' && !p2Name.startsWith('Visitante') && !isBotGame) {
              const update = { $inc: { matchesPlayed: 1 } };
              if (gameState.winner === 2) update.$inc.matchesWon = 1;
@@ -349,7 +347,6 @@ io.on('connection', (socket) => {
         const roomId = getSocketGameRoom(socket);
         
         if (roomId) {
-            // Avisa quem ficou (se alguém ficou)
             io.to(roomId).emit('receive-chat', { 
                 msg: "Alguém desconectou.", 
                 senderName: "Sistema", 

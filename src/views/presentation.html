@@ -44,16 +44,84 @@
             </section>
 
             <section>
+                <h2>Agenda</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 0.8em; text-align: left; margin-top: 30px;">
+                    
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 5px solid #2c3e50;">
+                        <h4 style="margin: 0 0 10px 0; color: #2c3e50;">1. Contexto</h4>
+                        <ul style="margin: 0; padding-left: 20px;">
+                            <li>O Jogo e o Problema</li>
+                            <li>Regras e Mecânicas</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 5px solid #27ae60;">
+                        <h4 style="margin: 0 0 10px 0; color: #27ae60;">3. Resultados</h4>
+                        <ul style="margin: 0; padding-left: 20px;">
+                            <li>Interface e Gameplay</li>
+                            <li>Gestão e Segurança</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 5px solid #3498db;">
+                        <h4 style="margin: 0 0 10px 0; color: #3498db;">2. Desenvolvimento</h4>
+                        <ul style="margin: 0; padding-left: 20px;">
+                            <li>Stack Tecnológico</li>
+                            <li>Arquitetura MVC</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 5px solid #f1c40f;">
+                        <h4 style="margin: 0 0 10px 0; color: #f1c40f;">4. Conclusão</h4>
+                        <ul style="margin: 0; padding-left: 20px;">
+                            <li>Demonstração</li>
+                            <li>Melhorias Futuras</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </section>
+
+            <section>
                 <h2>O Objetivo</h2>
-                <p>Trazer o jogo de tabuleiro de 2600 a.C. para a web moderna.</p>
+                <p>Recriar o jogo de tabuleiro de 2600 a.C. na web.</p>
                 <div style="text-align: left; margin-top: 40px; font-size: 0.9em;">
                     <ul>
-                        <li class="fragment">🎲 <strong>Jogabilidade Fiel:</strong> Regras de Irving Finkel.</li>
-                        <li class="fragment">🌍 <strong>Multiplayer Real-time:</strong> Sem "refresh" na página.</li>
-                        <li class="fragment">🤖 <strong>Bot Inteligente:</strong> Para treino offline.</li>
-                        <li class="fragment">💾 <strong>Persistência:</strong> Histórico e Ranking no MongoDB.</li>
+                        <li class="fragment"><strong>Jogabilidade Fiel:</strong> Regras de Irving Finkel.</li>
+                        <li class="fragment"><strong>Multiplayer:</strong> Sem "refresh" na página.</li>
+                        <li class="fragment"><strong>Bot:</strong> Para treino offline.</li>
+                        <li class="fragment"><strong>Persistência:</strong> Histórico e Ranking no MongoDB.</li>
                     </ul>
                 </div>
+            </section>
+
+            <section>
+                <h2>Como Funciona?</h2>
+                
+                <div style="display: flex; justify-content: space-between; text-align: center; margin-bottom: 30px; font-size: 0.7em;">
+                    
+                    <div style="flex: 1; padding: 10px;">
+                        <h4 style="color: #61dafb; border-bottom: 2px solid #444; padding-bottom: 10px; margin-bottom: 15px;">Objetivo</h4>
+                        <p>Levar todas as <strong>7 peças</strong> do início ao fim do tabuleiro.</p>
+                    </div>
+
+                    <div style="flex: 1; padding: 10px; border-left: 1px solid #333; border-right: 1px solid #333;">
+                        <h4 style="color: #e74c3c; border-bottom: 2px solid #444; padding-bottom: 10px; margin-bottom: 15px;">Guerra</h4>
+                        <p>A linha central é compartilhada. Cair sobre o oponente <span style="color: #e74c3c; font-weight: bold;">captura</span> a peça dele.</p>
+                    </div>
+
+                    <div style="flex: 1; padding: 10px;">
+                        <h4 style="color: #a6e22e; border-bottom: 2px solid #444; padding-bottom: 10px; margin-bottom: 15px;">Roseta</h4>
+                        <p>Garante turno extra, é a única casa segura na zona de Guerra.<br><strong>Dados:</strong> 4 tetraedros binários.</p>
+                    </div>
+
+                </div>
+
+                <div class="fragment fade-up">
+                    <img src="/assets/rules-path.png" alt="Caminho do Jogo" 
+                         style="width: 50%; max-height: 350px; border: 1px solid #ccc; box-shadow: 0 4px 15px rgba(0,0,0,0.3); background: white; padding: 10px; border-radius: 8px;">
+                </div>
+
             </section>
 
             <section>
@@ -107,26 +175,6 @@
             </section>
 
             <section>
-                <h3>Sincronização de Estado</h3>
-                <p style="font-size: 0.7em;">O servidor é a "Fonte da Verdade". O cliente apenas desenha.</p>
-                <pre><code class="hljs javascript" data-trim data-line-numbers>
-// server.js (Simplificado)
-socket.on('move-piece', (index) => {
-    // 1. Servidor valida o movimento
-    const newState = game.movePiece(index);
-    
-    // 2. Se válido, avisa TODOS na sala
-    if (newState) {
-        io.to(roomId).emit('update-state', newState);
-        
-        // 3. Verifica vitória
-        if (newState.winner) handleGameEnd(roomId);
-    }
-});
-                </code></pre>
-            </section>
-
-            <section>
                 <h2>Resultados Obtidos</h2>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 0.7em;">
                     <div class="box">
@@ -149,6 +197,97 @@ socket.on('move-piece', (index) => {
             </section>
 
             <section>
+                <h3>1. Dashboard Inicial</h3>
+                <div style="display: grid; grid-template-columns: 40% 60%; gap: 30px; align-items: center; margin-top: 30px;">
+                    
+                    <div style="text-align: left; font-size: 0.6em;">
+                        <p style="margin-bottom: 20px;">A porta de entrada para o site.</p>
+                        
+                        <div class="fragment fade-in-then-semi-out" style="background: #f8f9fa; padding: 15px; border-left: 5px solid #61dafb; border-radius: 4px; margin-bottom: 10px;">
+                            <strong>📺 Lobby de salas</strong><br>
+                            Atualização via Socket sem recarregar (F5).
+                        </div>
+
+                        <div class="fragment fade-in-then-semi-out" style="background: #f8f9fa; padding: 15px; border-left: 5px solid #f1c40f; border-radius: 4px; margin-bottom: 10px;">
+                            <strong>🏆 Ranking</strong><br>
+                            Ranking para partidas PvP.
+                        </div>
+
+                        <div class="fragment fade-in-then-semi-out" style="background: #f8f9fa; padding: 15px; border-left: 5px solid #2c3e50; border-radius: 4px;">
+                            <strong>🚀 UX Unificada</strong><br>
+                            Login, Salas e Perfil no mesmo painel.
+                        </div>
+                    </div>
+
+                    <div>
+                        <img src="/assets/dashboard.png" alt="Dashboard" 
+                             style="width: 100%; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid #ddd;">
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>2. A Experiência de Jogo</h3>
+                <div style="display: grid; grid-template-columns: 60% 40%; gap: 30px; align-items: center; margin-top: 30px;">
+                    
+                    <div>
+                        <img src="/assets/gameplay.png" alt="Gameplay" 
+                             style="width: 100%; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid #ddd;">
+                    </div>
+
+                    <div style="text-align: left; font-size: 0.6em;">
+
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            <li class="fragment fade-up" style="margin-bottom: 15px; padding-left: 15px; border-left: 3px solid #27ae60;">
+                                <strong>Sincronização:</strong><br>Movimentos validados no Back-end e refletidos instantaneamente.
+                            </li>
+                            <li class="fragment fade-up" style="margin-bottom: 15px; padding-left: 15px; border-left: 3px solid #27ae60;">
+                                <strong>Dados Visuais:</strong><br>Renderização CSS de tetraedros (sem imagens).
+                            </li>
+                            <li class="fragment fade-up" style="margin-bottom: 15px; padding-left: 15px; border-left: 3px solid #27ae60;">
+                                <strong>Chat Contextual:</strong><br>Mensagens isoladas por sala com identificação.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>3. Gestão e Segurança</h3>
+                <div style="display: grid; grid-template-columns: 40% 60%; gap: 30px; align-items: center; margin-top: 30px;">
+                    
+                    <div style="text-align: left; font-size: 0.6em;">
+                        <br>
+                        
+                        <div class="box" style="background: #fff5f5; border: 1px solid #e74c3c; color: #c0392b;">
+                            <h4 style="margin: 0 0 10px 0; color: #c0392b;">Painel Admin</h4>
+                            <ul style="margin: 0; padding-left: 20px;">
+                                <li class="fragment">Acesso restrito (Middleware).</li>
+                                <li class="fragment">Visualização de usuários.</li>
+                                <li class="fragment">Banimento (CRUD Delete).</li>
+                            </ul>
+                        </div>
+
+                        <br>
+
+                        <div class="fragment">
+                            <strong>🔒 Camada de Segurança:</strong>
+                            <ul style="font-size: 0.9em; color: #555; margin-top: 5px;">
+                                <li>Hash Bcrypt (Senhas).</li>
+                                <li>Helmet (Headers HTTP).</li>
+                                <li>Sanitização XSS.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div>
+                        <img src="/assets/admin.png" alt="Admin Panel" 
+                             style="width: 100%; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid #ddd;">
+                    </div>
+                </div>
+            </section>
+
+            <section>
                 <h1 style="color: #2980b9;">Demonstração</h1>
                 <p>O sistema está rodando 24/7 no VPS da UFSC.</p>
                 <br>
@@ -164,9 +303,53 @@ socket.on('move-piece', (index) => {
             </section>
 
             <section>
+                <h2 style="margin-bottom: 10px;">Melhorias Futuras</h2>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: left; font-size: 0.55em;">
+                    
+                    <div class="box" style="border-left: 5px solid #61dafb; padding: 15px;">
+                        <h4 style="margin: 0 0 5px 0; color: #61dafb; font-size: 1.3em;">🎲 Novas Regras</h4>
+                        <p style="margin: 0;">Implementação de variantes:</p>
+                        <ul style="margin-top: 5px; margin-bottom: 0;">
+                            <li><strong>Masters Rules:</strong> Tabuleiro maior e mais estratégia.</li>
+                            <li><strong>Blitz Mode:</strong> Partidas rápidas com tempo.</li>
+                        </ul>
+                    </div>
+
+                    <div class="box" style="border-left: 5px solid #f1c40f; padding: 15px;">
+                        <h4 style="margin: 0 0 5px 0; color: #f1c40f; font-size: 1.3em;">🤖 IA e Níveis</h4>
+                        <p style="margin: 0;">Evolução do Bot atual:</p>
+                        <ul style="margin-top: 5px; margin-bottom: 0;">
+                            <li><strong>Algoritmo Minimax:</strong> Prever jogadas ótimas.</li>
+                            <li><strong>Dificuldade:</strong> Fácil, Médio e Impossível.</li>
+                        </ul>
+                    </div>
+
+                    <div class="box" style="border-left: 5px solid #e74c3c; padding: 15px;">
+                        <h4 style="margin: 0 0 5px 0; color: #e74c3c; font-size: 1.3em;">📼 Sistema de Replay</h4>
+                        <p style="margin: 0;">Persistência granular de movimentos:</p>
+                        <ul style="margin-top: 5px; margin-bottom: 0;">
+                            <li>Assistir partidas antigas novamente.</li>
+                            <li>Compartilhar replays via Link.</li>
+                        </ul>
+                    </div>
+
+                    <div class="box" style="border-left: 5px solid #27ae60; padding: 15px;">
+                        <h4 style="margin: 0 0 5px 0; color: #27ae60; font-size: 1.3em;">📊 Analytics</h4>
+                        <p style="margin: 0;">Geração de gráficos pós-jogo:</p>
+                        <ul style="margin-top: 5px; margin-bottom: 0;">
+                            <li>Distribuição de sorte nos dados.</li>
+                            <li>Taxa de captura e eficiência.</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </section>
+
+            <section>
                 <h2>Obrigado!</h2>
                 <p>Dúvidas?</p>
-                <small>Desenvolvido com ❤️ e muito Café.</small>
+                <small>Desenvolvido com ❤️ e muito ☕.</small>
             </section>
 
         </div>
